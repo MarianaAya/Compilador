@@ -46,7 +46,7 @@ public class TabelaToken {
         tabela.add(new Token("t_diferente","!="));
         tabela.add(new Token("t_pontovirgula",";"));
         tabela.add(new Token("t_e","&"));
-        tabela.add(new Token("t_or","|"));
+        tabela.add(new Token("t_ou","|"));
    
         
         
