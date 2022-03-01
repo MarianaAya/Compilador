@@ -30,7 +30,7 @@ public class AnaliseSintatica {
                     Comandos(lista,false);
                     if(Singleton.getErros().size()==0){
                    
-                        if(!(pos<lista.size() && lista.get(lista.size()-1).getToken().equals("t_finish"))){ //Se o programa não terminou com finish
+                        if(!(lista.get(lista.size()-1).getToken().equals("t_finish"))){ //Se o programa não terminou com finish
                             Singleton.addErro("Erro sintático: programa não tem FINISH");
                     }
                     }
@@ -46,7 +46,7 @@ public class AnaliseSintatica {
     }
     
     public void Comandos(List<Token> lista, boolean flag) { //a flag é para dizer que está dentro de um if, while ...
-        while(Singleton.getErros().size()==0 && pos<lista.size() && flag){
+        while(Singleton.getErros().size()==0 && pos+1<lista.size()){
             if(lista.get(pos).getToken().equals("t_identificador")){ //nesse caso ele pode ser uma definicao ou uma expressao
                 Definicao(lista);
             }
@@ -69,25 +69,26 @@ public class AnaliseSintatica {
                             if(lista.get(pos).getToken().equals("t_tipo_int") || lista.get(pos).getToken().equals("t_tipo_float")
                                || lista.get(pos).getToken().equals("t_tipo_string") || lista.get(pos).getToken().equals("t_tipo_cientifico")){
                                 pos++;
-                                System.out.println("entrei na declaracao");
                                 Declaracao(lista);
                             }
                             else{
                                 if(lista.get(pos).getToken().equals("t_fecha_chaves") && flag){
                                     flag=false;
+                                    break;
                                 }
                                 else{
                                     if(lista.get(pos).getToken().equals("t_finish") && flag){
                                         Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": finish não pode ser colocado aqui");
                                     }
-                                    else
-                                        Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": sintática não reconhecida com um comando");
+                                    /*else
+                                        Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": sintática não reconhecida com um comando");*/
                                 }
                             }
                         }
                     }
                 }
             }
+            //pos++;
            
         }
     }
@@ -132,6 +133,7 @@ public class AnaliseSintatica {
         if(pos<lista.size()){
             if(lista.get(pos).getToken().equals("t_abre_parenteses")) {
                 pos++;
+                System.out.println("entrei");
                 Definicao(lista);
                 if(Singleton.getErros().size()==0){
                     pos++;
@@ -243,6 +245,7 @@ public class AnaliseSintatica {
         if(pos<lista.size()) {
             if(lista.get(pos).getToken().equals("t_abre_parenteses")) {
                 pos++;
+                
                 Comparacao(lista);
                 if(Singleton.getErros().size()==0){
                     if(pos<lista.size()){
@@ -253,9 +256,12 @@ public class AnaliseSintatica {
                                 
                                 pos++;
                                 Comandos(lista,true);
+                                System.out.println("sai da comparacao");
                                 if(!(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves"))) {
                                     Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando IF, era esperado }");
                                 }
+                                else
+                                    pos++;
                             }
                             else {
                                 Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando IF, era esperado {");
