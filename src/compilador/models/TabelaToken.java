@@ -19,9 +19,10 @@ public class TabelaToken {
     public void criarTabela() {
         tabela.add(new Token("t_go","go"));
         tabela.add(new Token("t_finish","finish"));
-        tabela.add(new Token("t_palavra_reservada","int"));
-        tabela.add(new Token("t_palavra_reservada","float"));
-        tabela.add(new Token("t_palavra_reservada","string"));
+        tabela.add(new Token("t_tipo_int","int"));
+        tabela.add(new Token("t_tipo_float","float"));
+        tabela.add(new Token("t_tipo_string","string"));
+        tabela.add(new Token("t_tipo_cientifico","cientifico"));
         tabela.add(new Token("t_while","while"));
         tabela.add(new Token("t_for","for"));
         tabela.add(new Token("t_if","if"));

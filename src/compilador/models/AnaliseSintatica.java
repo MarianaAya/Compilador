@@ -29,7 +29,7 @@ public class AnaliseSintatica {
                 else { //Próximo não é FINISH
                     Comandos(lista);
                     if(Singleton.getErros().size()==0){
-                        pos++;
+                   
                         if(!(pos<lista.size() && lista.get(pos).getToken().equals("t_finish"))){ //Se o programa não terminou com finish
                             Singleton.addErro("Erro sintático: programa não tem FINISH");
                     }
@@ -46,29 +46,39 @@ public class AnaliseSintatica {
     }
     
     public void Comandos(List<Token> lista) {
-        if(lista.get(pos).getToken().equals("t_identificador")){ //nesse caso ele pode ser uma definicao ou uma expressao
-            Definicao(lista);
-        }
-        else {
-            if(lista.get(pos).getToken().equals("t_while")) { //é o while
-                pos++;
-                While(lista);
+        while(Singleton.getErros().size()==0 && pos+1<lista.size()){
+            if(lista.get(pos).getToken().equals("t_identificador")){ //nesse caso ele pode ser uma definicao ou uma expressao
+                Definicao(lista);
             }
-            else{
-                if(lista.get(pos).getToken().equals("t_for")) { //é o for
+            else {
+                if(lista.get(pos).getToken().equals("t_while")) { //é o while
                     pos++;
-                    For(lista);
+                    While(lista);
                 }
-                else {
-                    if(lista.get(pos).getToken().equals("t_if")) { // é o if
+                else{
+                    if(lista.get(pos).getToken().equals("t_for")) { //é o for
                         pos++;
-                        If(lista);
+                        For(lista);
                     }
                     else {
-                        Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": sintática não reconhecida com um comando");
+                        if(lista.get(pos).getToken().equals("t_if")) { // é o if
+                            pos++;
+                            If(lista);
+                        }
+                        else {
+                            if(lista.get(pos).getToken().equals("t_tipo_int") || lista.get(pos).getToken().equals("t_tipo_float")
+                               || lista.get(pos).getToken().equals("t_tipo_string") || lista.get(pos).getToken().equals("t_tipo_cientifico")){
+                                pos++;
+                                System.out.println("entrei na declaracao");
+                                Declaracao(lista);
+                            }
+                            else
+                                Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": sintática não reconhecida com um comando");
+                        }
                     }
                 }
             }
+           
         }
     }
     public void Definicao(List<Token> lista) {
@@ -84,7 +94,7 @@ public class AnaliseSintatica {
                         if(pos<lista.size()) {
                             if(SinalOperacao(lista.get(pos).getToken())) {
                                 pos--;
-                                System.out.println("passei na expressao");
+                       
                                 Expressao(lista);
                             }
                             else {
@@ -210,7 +220,13 @@ public class AnaliseSintatica {
         
     }
     
-    
+    public void Declaracao(List<Token> lista) {
+        if(pos<lista.size() && lista.get(pos).getToken().equals("t_identificador")) {
+           pos++;
+        }
+        else
+            Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando DECLARACAO");
+    }
     
     public void If(List<Token> lista) {
         
