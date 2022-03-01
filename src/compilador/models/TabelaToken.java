@@ -29,7 +29,7 @@ public class TabelaToken {
         tabela.add(new Token("t_sinal_definicao","="));
         tabela.add(new Token("t_positivo","+"));
         tabela.add(new Token("t_negativo","-"));
-        tabela.add(new Token("t_multiplicacaoe","*"));
+        tabela.add(new Token("t_multiplicacao","*"));
         tabela.add(new Token("t_divisao","/"));
         tabela.add(new Token("t_abre_parenteses","("));
         tabela.add(new Token("t_fecha_parenteses",")"));
@@ -45,6 +45,7 @@ public class TabelaToken {
         tabela.add(new Token("t_igual","=="));
         tabela.add(new Token("t_diferente","!="));
         tabela.add(new Token("t_pontovirgula",";"));
+        tabela.add(new Token("t_virgula",","));
         tabela.add(new Token("t_e","&"));
         tabela.add(new Token("t_ou","|"));
    
@@ -102,6 +103,13 @@ public class TabelaToken {
                 flag=true;
                 escolhido=new Token("t_identificador",cadeia);
             }  
+        }
+        
+        //verificar se é string
+        if(!flag) {
+            if(cadeia.charAt(0)==34 && cadeia.charAt(cadeia.length()-1)==34) {
+                escolhido = new Token("t_string",cadeia);
+            }
         }
       
         

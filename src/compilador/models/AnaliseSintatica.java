@@ -47,8 +47,7 @@ public class AnaliseSintatica {
     
     public void Comandos(List<Token> lista) {
         if(lista.get(pos).getToken().equals("t_identificador")){ //nesse caso ele pode ser uma definicao ou uma expressao
-            pos++;
-            
+            Definicao(lista);
         }
         else {
             if(lista.get(pos).getToken().equals("t_while")) { //é o while
@@ -57,7 +56,8 @@ public class AnaliseSintatica {
             }
             else{
                 if(lista.get(pos).getToken().equals("t_for")) { //é o for
-                    
+                    pos++;
+                    For(lista);
                 }
                 else {
                     if(lista.get(pos).getToken().equals("t_if")) { // é o if
@@ -72,35 +72,97 @@ public class AnaliseSintatica {
         }
     }
     public void Definicao(List<Token> lista) {
-        if(pos<lista.size()) {
-            if(lista.get(pos).getToken().equals("t_identificador")) {
+        
+        if(pos<lista.size() && lista.get(pos).getToken().equals("t_identificador")){
+            pos++;
+            if(pos<lista.size() && lista.get(pos).getToken().equals("t_sinal_definicao")) {
                 pos++;
-                if(pos<lista.size() && lista.get(pos).getToken().equals("t_sinal_definicao")) {
-                    pos++;
-                    if(pos<lista.size() && lista.get(pos).equals("t_number")) {
-                        
+                if(pos<lista.size() && (Numero(lista.get(pos).getToken()) || lista.get(pos).getToken().equals("t_string") 
+                         || lista.get(pos).getToken().equals("t_identificador") )){
+                    if(Numero(lista.get(pos).getToken()) || lista.get(pos).getToken().equals("t_identificador")) {
+                        pos++;
+                        if(pos<lista.size()) {
+                            if(SinalOperacao(lista.get(pos).getToken())) {
+                                pos--;
+                                System.out.println("passei na expressao");
+                                Expressao(lista);
+                            }
+                            else {
+                                pos--;
+                            }
+                        }
                     }
+
                 }
                 else {
-                    Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando DEFINICAO, era esperado =");
+                    Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando DEFINICAO, era esperado uma string, número ou expressão");
                 }
             }
             else {
-                Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando DEFINICAO, era esperado um identificador");
+                Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando DEFINICAO, era esperado =");
             }
         }
         else {
             Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando DEFINICAO");
         }
+     
+     
     }
     public void For(List<Token> lista) {
         if(pos<lista.size()){
             if(lista.get(pos).getToken().equals("t_abre_parenteses")) {
                 pos++;
                 Definicao(lista);
+                if(Singleton.getErros().size()==0){
+                    pos++;
+  
+                    if(pos<lista.size() && lista.get(pos).getToken().equals("t_virgula")){
+                        pos++;
+                        Comparacao(lista);
+                       
+                        if(Singleton.getErros().size()==0) {
+                            pos++;
+              
+                            if(pos<lista.size() && lista.get(pos).getToken().equals("t_virgula")) {
+                                pos++;
+                                Definicao(lista);
+                                
+                                if(Singleton.getErros().size()==0) {
+                                    pos++;
+                                    if(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_parenteses")) {
+                                        pos++;
+                                        if(pos<lista.size() && lista.get(pos).getToken().equals("t_abre_chaves")) {
+                                            pos++;
+                                            if(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves")) {
+                                                
+                                            }
+                                            else {
+                                                Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando FOR, era esperado }");
+                                            }
+                                            
+                                        }
+                                        else {
+                                            Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando FOR, era esperado {");
+                                        }
+                                    }
+                                    else {
+                                        Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando FOR, era esperado )");
+                                    }
+                                }
+                            }
+                            else {
+                                Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando FOR, era esperado ,");
+                            }
+                        } 
+                        
+                    }
+                    else {
+                        Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando FOR, era esperado ,");
+                    }
+                }
             }
             else {
-                Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando WHILE, era esperado (");
+                Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando FOR, era esperado (");
             }
         }
         else {
@@ -158,6 +220,7 @@ public class AnaliseSintatica {
                 Comparacao(lista);
                 if(Singleton.getErros().size()==0){
                     if(pos<lista.size()){
+                        pos++;
                         if(lista.get(pos).getToken().equals("t_fecha_parenteses")) {
                             pos++;
                             if(pos<lista.size() && lista.get(pos).getToken().equals("t_abre_chaves")) {
@@ -190,7 +253,61 @@ public class AnaliseSintatica {
         }
         
     }
-    
+    public void Expressao(List<Token> lista) {
+        if(pos<lista.size()) {
+            String token = lista.get(pos).getToken();
+            if(Termo(token)) { // x
+                pos++;
+                if(pos<lista.size()) {
+                    token = lista.get(pos).getToken();
+                    if(SinalOperacao(token)) { // x +
+                        if(pos<lista.size()) {
+                            pos++;
+                            if(pos<lista.size()) { // x + x
+                                if(Termo(lista.get(pos).getToken())) {
+                                    
+                                    if(pos<lista.size()) {
+                                        pos++;
+                                      
+                                        TermoOperacao(lista);
+                                             
+                                        
+                                    }
+                                    else {
+                                        Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro na EXPRESSAO, era espera um identificador ou um número");
+                                    }
+                                }
+                                else {
+                                    Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro na EXPRESSAO, era espera um identificador ou um número");
+                                }
+                            }
+                            else{
+                                Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro na EXPRESSAO, era esperado um identificador ou um núumero");
+                            }
+                            
+                        }
+                        else {
+                            Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro na EXPRESSAO, era esperado um sinal de comparação");
+                        }
+                    }
+                    else {
+                        Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro na EXPRESSAO, era esperado um sinal de operação");
+                    }
+                    
+                } 
+                else{
+                    Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro na EXPRESSAO, era esperado um sinal de operação");
+                }
+                
+            }
+            else {
+                Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro na EXPRESSAO, era esperado um identificador ou um número");
+            }
+        }
+        else {
+            Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro na EXPRESSAO");
+        }
+    }
     public void Comparacao(List<Token> lista) {
         if(pos<lista.size()) {
             String token = lista.get(pos).getToken();
@@ -207,7 +324,7 @@ public class AnaliseSintatica {
                                     if(pos<lista.size()) {
                                         pos++;
                                         TermoComparacao(lista);
-                                             
+                               
                                         
                                     }
                                     else {
@@ -247,14 +364,41 @@ public class AnaliseSintatica {
     }
     public void TermoComparacao(List<Token> lista) {
         if(Singleton.getErros().size()==0) {
+         
             if(pos<lista.size() && SinalLogica(lista.get(pos).getToken())) {
                 pos++;
                 Comparacao(lista);
 
             }
+            else {
+                pos--;
+            }
         }
     }
-    
+    public void TermoOperacao(List<Token> lista) {
+        if(Singleton.getErros().size()==0) {
+            if(pos<lista.size() && SinalOperacao(lista.get(pos).getToken())) {
+                pos++;
+             
+                if(pos<lista.size() && Termo(lista.get(pos).getToken())) {
+                    pos++;
+                    TermoOperacao(lista);
+                }
+                else {
+                    Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no TERMOOPERACAO, era esperado um identificaor ou um número");
+                }
+
+            }
+            else{
+                pos--;
+            }
+        }
+    }
+    public boolean SinalOperacao(String token) {
+        if(token.equals("t_positivo") || token.equals("t_negativo") || token.equals("t_divisao") || token.equals("t_multiplicacao"))
+            return true;
+        return false;
+    }
     public boolean SinalComparacao(String token) {
         if(token.equals("t_maior") || token.equals("t_menor") || token.equals("t_maior_igual") || token.equals("t_menor_igual")
            || token.equals("t_igual") || token.equals("t_diferente")) {
@@ -274,5 +418,11 @@ public class AnaliseSintatica {
         }
         return false;
     }
+    public boolean Numero(String token) {
+        if(token.equals("t_numero_int") || token.equals("t_numero_float") || token.equals("t_numero_cientifico"))
+            return true;
+        return false;
+    }
+    
    
 }
