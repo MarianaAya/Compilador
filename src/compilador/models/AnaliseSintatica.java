@@ -78,15 +78,21 @@ public class AnaliseSintatica {
                                 }
                                 else{
                                     if(lista.get(pos).getToken().equals("t_finish") && flag){
-                                        Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": finish não pode ser colocado no final");
+                                        Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": finish não pode ser colocado aqui");
                                     }
                                     else{
                                         if(lista.get(pos).getToken().equals("t_go")){
                                             Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": go só pode ser colocado no começo");
                                         }
+                                        else{
+                                            if(pos< lista.size()-1 && lista.get(pos).getToken().equals("t_finish")){
+                                                Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": finish deve ser colocado somente no final do programa");
+                                            }
+                                            else
+                                                Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": não reconhecida com um comando "+lista.get(pos).getToken()+" cadeia = "+lista.get(pos).getCadeia());
+                                        }
                                     }
-                                    /*else
-                                        Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": sintática não reconhecida com um comando");*/
+                                    
                                 }
                             }
                         }
@@ -101,24 +107,24 @@ public class AnaliseSintatica {
         
         if(pos<lista.size() && lista.get(pos).getToken().equals("t_identificador")){
             pos++;
-            
             if(pos<lista.size() && lista.get(pos).getToken().equals("t_sinal_definicao")) {
                 pos++;
                 if(pos<lista.size() && (Numero(lista.get(pos).getToken()) || lista.get(pos).getToken().equals("t_string") 
                          || lista.get(pos).getToken().equals("t_identificador") )){
+                    
                     if(Numero(lista.get(pos).getToken()) || lista.get(pos).getToken().equals("t_identificador")) {
                         pos++;
                         if(pos<lista.size()) {
                             if(SinalOperacao(lista.get(pos).getToken())) {
+                    
                                 pos--;
                                 
                                 Expressao(lista);
                             }
-                            else {
-                                pos--;
-                            }
+                           
                         }
                     }
+                    
 
                 }
                 else {
@@ -139,11 +145,9 @@ public class AnaliseSintatica {
         if(pos<lista.size()){
             if(lista.get(pos).getToken().equals("t_abre_parenteses")) {
                 pos++;
-                System.out.println("entrei");
                 Definicao(lista);
                 if(Singleton.getErros().size()==0){
-                    pos++;
-  
+                    //pos++;
                     if(pos<lista.size() && lista.get(pos).getToken().equals("t_virgula")){
                         pos++;
                         Comparacao(lista);
@@ -162,11 +166,13 @@ public class AnaliseSintatica {
                                         if(pos<lista.size() && lista.get(pos).getToken().equals("t_abre_chaves")) {
                                             pos++;
                                             Comandos(lista,true);
-                                            if(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves")) {
-                                                pos++;
-                                            }
-                                            else {
-                                                Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando FOR, era esperado }");
+                                            if(Singleton.getErros().size()==0) {
+                                                if(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves")) {
+                                                    pos++;
+                                                }
+                                                else {
+                                                    Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando FOR, era esperado }");
+                                                }
                                             }
                                             
                                         }
@@ -180,13 +186,13 @@ public class AnaliseSintatica {
                                 }
                             }
                             else {
-                                Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando FOR, era esperado ,");
+                                Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando FOR, era esperado , (segundo)");
                             }
                         } 
                         
                     }
                     else {
-                        Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando FOR, era esperado ,");
+                        Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando FOR, era esperado , (primeiro)");
                     }
                 }
             }
@@ -211,11 +217,13 @@ public class AnaliseSintatica {
                             if(pos<lista.size() && lista.get(pos).getToken().equals("t_abre_chaves")){
                                 pos++;
                                 Comandos(lista,true);
-                                if(!(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves"))){
-                                    Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando WHILE, era esperado }");
+                                if(Singleton.getErros().size()==0) {
+                                    if(!(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves"))){
+                                        Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando WHILE, era esperado }");
+                                    }
+                                    else
+                                        pos++;
                                 }
-                                else
-                                    pos++;
                                
                             }
                             else {
@@ -245,6 +253,9 @@ public class AnaliseSintatica {
     public void Declaracao(List<Token> lista) {
         if(pos<lista.size() && lista.get(pos).getToken().equals("t_identificador")) {
            pos++;
+           if(pos<lista.size() && lista.get(pos).getToken().equals("t_sinal_definicao")){
+               Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando DECLARACAO");
+           } 
         }
         else
             Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando DECLARACAO");
@@ -266,12 +277,13 @@ public class AnaliseSintatica {
                                 
                                 pos++;
                                 Comandos(lista,true);
-                              
-                                if(!(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves"))) {
-                                    Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando IF, era esperado }");
+                                if(Singleton.getErros().size()==0) {
+                                    if(!(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves"))) {
+                                        Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando IF, era esperado }");
+                                    }
+                                    else
+                                        pos++;
                                 }
-                                else
-                                    pos++;
                             }
                             else {
                                 Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando IF, era esperado {");
