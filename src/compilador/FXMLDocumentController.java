@@ -8,20 +8,28 @@ package compilador;
 import compilador.models.AnaliseLexica;
 import compilador.models.AnaliseSintatica;
 import compilador.models.Singleton;
+import java.io.File;
+import java.io.RandomAccessFile;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -40,10 +48,13 @@ public class FXMLDocumentController implements Initializable {
     private Label lbErro;
 
    
-    
+    private File file_selecionado=null;
+    @FXML
+    private MenuItem miFechar;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         lbLinha.setText(" 1"+"\n"+" ");
+        miFechar.setDisable(true);
     }    
 
     @FXML
@@ -100,6 +111,140 @@ public class FXMLDocumentController implements Initializable {
             linha=linha+1;
         }
        
+    }
+
+    @FXML
+    private void evtAbrir(ActionEvent event) {
+        lbLinha.setText("");
+        lbErro.setText("");
+        txCodigo.setText("");
+        
+        FileChooser fc=new FileChooser();
+        fc.setTitle("Abrir arquivo");
+        File file=fc.showOpenDialog(txCodigo.getScene().getWindow());
+        file_selecionado=file;
+        String codigo="";
+        try
+        {
+            RandomAccessFile arq=new RandomAccessFile(file,"r" );
+            byte[] conteudo=new byte[(int)arq.length()];
+            arq.readFully(conteudo);
+            codigo=new String(conteudo);
+            txCodigo.setText(codigo);
+            corrigirLabel(codigo);
+            miFechar.setDisable(false);
+            arq.close();
+        }
+        catch(Exception e)
+        {
+            Alert alert=new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Erro ao abrir o arquivo");
+            alert.setContentText(e.getMessage());
+        }
+        
+    }
+    private void corrigirLabel(String codigo) {
+        lbLinha.setText(" 1"+"\n"+" ");
+        for(int i=0;i<codigo.length();i++) {
+            if(codigo.charAt(i)== '\n') {
+                lbLinha.setText(lbLinha.getText()+linha+"\n"+" ");
+                linha=linha+1;
+                
+            }
+        }
+    }
+    @FXML
+    private void evtSalvar(ActionEvent event) {
+        if(file_selecionado==null){
+            FileChooser c=new FileChooser();
+            c.setTitle("Salvar arquivo");
+            File file=c.showSaveDialog(txCodigo.getScene().getWindow());
+            RandomAccessFile arq;
+            try
+            {
+                if(file!=null)
+                {
+                    arq=new RandomAccessFile(file,"rw");
+                    arq.setLength(0);
+                    arq.writeBytes(txCodigo.getText());
+                    arq.close();
+                    file_selecionado=null;
+                }
+
+            }
+            catch(Exception e)
+            {
+                Alert alert=new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Erro ao salvar");
+                alert.setContentText(e.getMessage());
+            }
+        }
+        else {
+            salvar();
+            
+        }
+    }
+    public void salvar() {
+        try
+        {
+            RandomAccessFile arq=new RandomAccessFile(file_selecionado,"rw");
+            byte[] conteudo=new byte[(int)arq.length()];
+            arq.readFully(conteudo);
+            if(!txCodigo.getText().equals(new String(conteudo)))
+            {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmar para salvar");
+                alert.setHeaderText("Autorização para salvar");
+                alert.setContentText("Salvar as alterações?");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if(result.get()==ButtonType.OK)
+                {
+                    arq.setLength(0);
+                    arq.writeBytes(txCodigo.getText());
+                }
+            }
+            arq.close();
+        }
+        catch(Exception e)
+        {
+            Alert alert=new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Erro ao abrir o arquivo");
+            alert.setContentText(e.getMessage());
+        }
+
+        file_selecionado=null;
+    }
+    @FXML
+    private void evtFechar(ActionEvent event) {
+        if(file_selecionado!=null) {
+            lbLinha.setText(" 1"+"\n"+" ");
+            lbErro.setText("");
+            txCodigo.setText("");
+            miFechar.setDisable(true);
+            file_selecionado=null;
+        }
+        else {
+            salvar();
+        }
+    }
+
+    @FXML
+    private void evtAumentar(ActionEvent event) {
+        Font fonte = txCodigo.getFont();
+        txCodigo.setFont(new Font(fonte.getSize()+1));
+        
+        Font fonte2 = lbLinha.getFont();
+        lbLinha.setFont(new Font(fonte2.getSize()+1));
+    }
+
+    @FXML
+    private void evtDiminuir(ActionEvent event) {
+        Font fonte = txCodigo.getFont();
+        txCodigo.setFont(new Font(fonte.getSize()-1));
+        
+        Font fonte2 = lbLinha.getFont();
+        lbLinha.setFont(new Font(fonte2.getSize()-1));
     }
     
 }
