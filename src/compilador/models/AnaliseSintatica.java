@@ -73,7 +73,6 @@ public class AnaliseSintatica {
                             }
                             else{
                                 if(lista.get(pos).getToken().equals("t_fecha_chaves") && flag){
-                                    System.out.println("entrei no flag");
                                     flag=false;
                                     break;
                                 }
@@ -89,8 +88,14 @@ public class AnaliseSintatica {
                                             if(pos< lista.size()-1 && lista.get(pos).getToken().equals("t_finish")){
                                                 Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": finish deve ser colocado somente no final do programa");
                                             }
-                                            else
-                                                Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": não reconhecida com um comando "+lista.get(pos).getToken()+" cadeia = "+lista.get(pos).getCadeia()+" flag = "+flag);
+                                            else{
+                                                if(lista.get(pos).getToken().equals("t_go")) {
+                                                    Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": go deve ser colocado somente no inicio do programa");
+                                                }
+                                                else
+                                                    Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": não reconhecida com um comando "+lista.get(pos).getToken()+" da cadeia = "+lista.get(pos).getCadeia());
+                                            
+                                            }
                                         }
                                     }
                                     
