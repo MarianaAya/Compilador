@@ -115,9 +115,7 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void evtAbrir(ActionEvent event) {
-        lbLinha.setText("");
-        lbErro.setText("");
-        txCodigo.setText("");
+        
         
         FileChooser fc=new FileChooser();
         fc.setTitle("Abrir arquivo");
@@ -126,6 +124,9 @@ public class FXMLDocumentController implements Initializable {
         String codigo="";
         try
         {
+            lbLinha.setText("");
+            lbErro.setText("");
+            txCodigo.setText("");
             RandomAccessFile arq=new RandomAccessFile(file,"r" );
             byte[] conteudo=new byte[(int)arq.length()];
             arq.readFully(conteudo);
@@ -133,6 +134,7 @@ public class FXMLDocumentController implements Initializable {
             txCodigo.setText(codigo);
             corrigirLabel(codigo);
             miFechar.setDisable(false);
+            
             arq.close();
         }
         catch(Exception e)
@@ -140,10 +142,12 @@ public class FXMLDocumentController implements Initializable {
             Alert alert=new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Erro ao abrir o arquivo");
             alert.setContentText(e.getMessage());
+            lbLinha.setText(" 1"+"\n"+" ");
         }
         
     }
     private void corrigirLabel(String codigo) {
+        linha=2;
         lbLinha.setText(" 1"+"\n"+" ");
         for(int i=0;i<codigo.length();i++) {
             if(codigo.charAt(i)== '\n') {
@@ -152,6 +156,8 @@ public class FXMLDocumentController implements Initializable {
                 
             }
         }
+   
+                
     }
     @FXML
     private void evtSalvar(ActionEvent event) {
