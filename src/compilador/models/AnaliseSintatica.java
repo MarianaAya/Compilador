@@ -73,6 +73,7 @@ public class AnaliseSintatica {
                             }
                             else{
                                 if(lista.get(pos).getToken().equals("t_fecha_chaves") && flag){
+                                    System.out.println("entrei no flag");
                                     flag=false;
                                     break;
                                 }
@@ -89,7 +90,7 @@ public class AnaliseSintatica {
                                                 Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": finish deve ser colocado somente no final do programa");
                                             }
                                             else
-                                                Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": não reconhecida com um comando "+lista.get(pos).getToken()+" cadeia = "+lista.get(pos).getCadeia());
+                                                Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": não reconhecida com um comando "+lista.get(pos).getToken()+" cadeia = "+lista.get(pos).getCadeia()+" flag = "+flag);
                                         }
                                     }
                                     
@@ -281,8 +282,28 @@ public class AnaliseSintatica {
                                     if(!(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves"))) {
                                         Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando IF, era esperado }");
                                     }
-                                    else
+                                    else {
                                         pos++;
+                                        if(pos<lista.size() && lista.get(pos).getToken().equals("t_else")) {
+                                            pos++;
+                                            if(pos<lista.size() && lista.get(pos).getToken().equals("t_abre_chaves")) {
+                                                pos++;
+                                                Comandos(lista,true);
+                                                if(Singleton.getErros().size()==0) {
+                                                    if(!(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves"))) {
+                                                        Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando ELSE, era esperado }");
+                                                    
+                                                    }
+                                                    else
+                                                        pos++;
+                                                }
+                                            }
+                                            else {
+                                                Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando ELSE, era esperado {");
+                                            }
+                                            
+                                        }
+                                    }
                                 }
                             }
                             else {
