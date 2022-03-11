@@ -69,7 +69,7 @@ public class FXMLDocumentController implements Initializable {
         
         AnaliseSintatica as=new AnaliseSintatica();
         if(erros.size()==0){
-            as.receberPrograma();
+            as.receberPrograma(txCodigo);
             if(Singleton.getErros().size()==0){
                 try
                 {
