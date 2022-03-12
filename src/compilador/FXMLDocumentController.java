@@ -114,7 +114,8 @@ public class FXMLDocumentController implements Initializable {
                 lbErro.setText("");
                 for(int i=0;i<erros.size();i++) {
                     lbErro.setText(lbErro.getText()+"\n"+erros.get(i).getMensagem());
-                    if(erros.get(i).getLinha()>0) {
+                    if(erros.get(i).getLinha()>0 && erros.get(i).getLinha()-1<vBoxLabels.getChildren().size()) {
+                        System.out.println(""+erros.get(i).getLinha());
                         label = (Label)vBoxLabels.getChildren().get(erros.get(i).getLinha()-1);
                         label.setStyle("-fx-background-color:#ff9999");
                     }
@@ -125,7 +126,7 @@ public class FXMLDocumentController implements Initializable {
             lbErro.setText("");
             for(int i=0;i<erros.size();i++) {
                 lbErro.setText(lbErro.getText()+"\n"+erros.get(i).getMensagem());
-                if(erros.get(i).getLinha()>0) {
+                if(erros.get(i).getLinha()>0 && erros.get(i).getLinha()-1<vBoxLabels.getChildren().size()) {
                     label = (Label)vBoxLabels.getChildren().get(erros.get(i).getLinha()-1);
                     label.setStyle("-fx-background-color:#ff9999");
                 }
