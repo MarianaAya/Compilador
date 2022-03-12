@@ -40,8 +40,6 @@ public class FXMLDocumentController implements Initializable {
     private Button btCompilar;
     @FXML
     private TextArea txCodigo;
-    @FXML
-    private Label lbLinha;
     
     private int linha = 2;
     @FXML
@@ -51,12 +49,22 @@ public class FXMLDocumentController implements Initializable {
     private File file_selecionado=null;
     @FXML
     private MenuItem miFechar;
+    @FXML
+    private VBox vBoxLabels;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        lbLinha.setText(" 1"+"\n"+" ");
+        Label label = criarLabel(1);
+        vBoxLabels.getChildren().add(label);
         miFechar.setDisable(true);
     }    
-
+    private Label criarLabel(int lin) {
+        Label label=new Label(""+lin);
+        label.setId("lb"+lin);
+        Font fonte = label.getFont();
+        label.setFont(new Font(14));
+        
+        return label;
+    }
     @FXML
     private void evtCompilar(ActionEvent event) {
         System.out.println("Compilei");
@@ -107,9 +115,14 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void evtKeyPress(KeyEvent event) {
         if(event.getCode().equals(KeyCode.ENTER)){
-            lbLinha.setText(lbLinha.getText()+linha+"\n"+" ");
+            Label label=criarLabel(linha);
+            vBoxLabels.getChildren().add(label);
             linha=linha+1;
         }
+        
+        if (event.isControlDown()&& (event.getCode() == KeyCode.V)) {
+            this.txCodigo.getScene().addEventHandler(KeyEvent.KEY_RELEASED, ev -> {corrigirLabel(txCodigo.getText());});
+        } 
        
     }
 
@@ -124,7 +137,6 @@ public class FXMLDocumentController implements Initializable {
         String codigo="";
         try
         {
-            lbLinha.setText("");
             lbErro.setText("");
             txCodigo.setText("");
             RandomAccessFile arq=new RandomAccessFile(file,"r" );
@@ -132,6 +144,7 @@ public class FXMLDocumentController implements Initializable {
             arq.readFully(conteudo);
             codigo=new String(conteudo);
             txCodigo.setText(codigo);
+            vBoxLabels.getChildren().removeAll(vBoxLabels.getChildren());
             corrigirLabel(codigo);
             miFechar.setDisable(false);
             
@@ -142,16 +155,21 @@ public class FXMLDocumentController implements Initializable {
             Alert alert=new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Erro ao abrir o arquivo");
             alert.setContentText(e.getMessage());
-            lbLinha.setText(" 1"+"\n"+" ");
         }
         
     }
     private void corrigirLabel(String codigo) {
-        linha=2;
-        lbLinha.setText(" 1"+"\n"+" ");
+        linha=1;
+        Label label;
+        label=criarLabel(linha);
+        vBoxLabels.getChildren().removeAll(vBoxLabels.getChildren());
+        label=criarLabel(linha);
+        vBoxLabels.getChildren().add(label);
+        linha++;
         for(int i=0;i<codigo.length();i++) {
             if(codigo.charAt(i)== '\n') {
-                lbLinha.setText(lbLinha.getText()+linha+"\n"+" ");
+                label=criarLabel(linha);
+                vBoxLabels.getChildren().add(label);
                 linha=linha+1;
                 
             }
@@ -224,7 +242,10 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void evtFechar(ActionEvent event) {
         if(file_selecionado!=null) {
-            lbLinha.setText(" 1"+"\n"+" ");
+            vBoxLabels.getChildren().removeAll(vBoxLabels.getChildren());
+            linha=1;
+            Label label = criarLabel(1);
+            vBoxLabels.getChildren().add(label);
             lbErro.setText("");
             txCodigo.setText("");
             miFechar.setDisable(true);
@@ -240,8 +261,12 @@ public class FXMLDocumentController implements Initializable {
         Font fonte = txCodigo.getFont();
         txCodigo.setFont(new Font(fonte.getSize()+1));
         
-        Font fonte2 = lbLinha.getFont();
-        lbLinha.setFont(new Font(fonte2.getSize()+1));
+        Font fonte2 = ((Label)(vBoxLabels.getChildren().get(0))).getFont();
+        for(int i=0;i<vBoxLabels.getChildren().size();i++) {
+           ((Label)(vBoxLabels.getChildren().get(i))).getFont();
+           ((Label)(vBoxLabels.getChildren().get(i))).setFont(new Font(fonte2.getSize()+1));
+        }
+        
     }
 
     @FXML
@@ -249,8 +274,11 @@ public class FXMLDocumentController implements Initializable {
         Font fonte = txCodigo.getFont();
         txCodigo.setFont(new Font(fonte.getSize()-1));
         
-        Font fonte2 = lbLinha.getFont();
-        lbLinha.setFont(new Font(fonte2.getSize()-1));
+        Font fonte2 = ((Label)(vBoxLabels.getChildren().get(0))).getFont();
+        for(int i=0;i<vBoxLabels.getChildren().size();i++) {
+           ((Label)(vBoxLabels.getChildren().get(i))).getFont();
+           ((Label)(vBoxLabels.getChildren().get(i))).setFont(new Font(fonte2.getSize()-1));
+        }
     }
     
 }

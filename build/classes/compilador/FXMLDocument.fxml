@@ -66,20 +66,13 @@
                <content>
                   <HBox>
                      <children>
-                        <VBox prefWidth="44.0">
-                           <children>
-                              <Label fx:id="lbLinha" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" text="1">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets top="6.0" />
-                                 </VBox.margin>
-                              </Label>
-                           </children>
+                        <VBox fx:id="vBoxLabels" prefWidth="44.0">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
+                           <padding>
+                              <Insets bottom="5.0" left="10.0" />
+                           </padding>
                         </VBox>
                         <TextArea fx:id="txCodigo" onKeyPressed="#evtKeyPress" prefHeight="423.0" prefWidth="854.0">
                            <font>
