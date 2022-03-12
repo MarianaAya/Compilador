@@ -51,6 +51,9 @@ public class FXMLDocumentController implements Initializable {
     private MenuItem miFechar;
     @FXML
     private VBox vBoxLabels;
+    
+    private int fontSize=14;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Label label = criarLabel(1);
@@ -61,7 +64,7 @@ public class FXMLDocumentController implements Initializable {
         Label label=new Label(""+lin);
         label.setId("lb"+lin);
         Font fonte = label.getFont();
-        label.setFont(new Font(14));
+        label.setFont(new Font(fontSize));
         
         return label;
     }
@@ -119,10 +122,16 @@ public class FXMLDocumentController implements Initializable {
             vBoxLabels.getChildren().add(label);
             linha=linha+1;
         }
-        
-        if (event.isControlDown()&& (event.getCode() == KeyCode.V)) {
-            this.txCodigo.getScene().addEventHandler(KeyEvent.KEY_RELEASED, ev -> {corrigirLabel(txCodigo.getText());});
-        } 
+        else {
+            if (event.isControlDown()&& (event.getCode() == KeyCode.V)) {
+                this.txCodigo.getScene().addEventHandler(KeyEvent.KEY_RELEASED, ev -> {corrigirLabel(txCodigo.getText());});
+            } 
+            else {
+                if(event.getCode() == KeyCode.BACK_SPACE) {
+                    this.txCodigo.getScene().addEventHandler(KeyEvent.KEY_RELEASED, ev -> {corrigirLabel(txCodigo.getText());});
+                }
+            }
+        }
        
     }
 
@@ -258,26 +267,22 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void evtAumentar(ActionEvent event) {
-        Font fonte = txCodigo.getFont();
-        txCodigo.setFont(new Font(fonte.getSize()+1));
-        
-        Font fonte2 = ((Label)(vBoxLabels.getChildren().get(0))).getFont();
+        fontSize++;
+        txCodigo.setFont(new Font(fontSize));
+
         for(int i=0;i<vBoxLabels.getChildren().size();i++) {
-           ((Label)(vBoxLabels.getChildren().get(i))).getFont();
-           ((Label)(vBoxLabels.getChildren().get(i))).setFont(new Font(fonte2.getSize()+1));
+           ((Label)(vBoxLabels.getChildren().get(i))).setFont(new Font(fontSize));
         }
         
     }
 
     @FXML
     private void evtDiminuir(ActionEvent event) {
-        Font fonte = txCodigo.getFont();
-        txCodigo.setFont(new Font(fonte.getSize()-1));
-        
-        Font fonte2 = ((Label)(vBoxLabels.getChildren().get(0))).getFont();
+        fontSize--;
+        txCodigo.setFont(new Font(fontSize));
+
         for(int i=0;i<vBoxLabels.getChildren().size();i++) {
-           ((Label)(vBoxLabels.getChildren().get(i))).getFont();
-           ((Label)(vBoxLabels.getChildren().get(i))).setFont(new Font(fonte2.getSize()-1));
+           ((Label)(vBoxLabels.getChildren().get(i))).setFont(new Font(fontSize));
         }
     }
     

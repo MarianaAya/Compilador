@@ -30,12 +30,11 @@ public class AnaliseSintatica {
                     }
                 }
                 else { //Próximo não é FINISH
-                    Comandos(lista,false);
-                    if(Singleton.getErros().size()==0){
+                        Comandos(lista,false);
                    
                         if(!(lista.get(lista.size()-1).getToken().equals("t_finish"))){ //Se o programa não terminou com finish
                             Singleton.addErro("Erro sintático: programa não tem FINISH");
-                    }
+                    
                     }
                 }
             }
@@ -50,7 +49,7 @@ public class AnaliseSintatica {
     
     public void Comandos(List<Token> lista, boolean flag) { //a flag é para dizer que está dentro de um if, while ...
         while(pos+1<lista.size()){
-            System.out.println("53 "+lista.get(pos).getCadeia()+" "+flag);
+            System.out.println("53 "+lista.get(pos).getCadeia()+" "+flag+" "+lista.get(pos).getToken());
             if(lista.get(pos).getToken().equals("t_identificador")){ //nesse caso ele pode ser uma definicao ou uma expressao
                 Definicao(lista,false);
             }
@@ -97,9 +96,9 @@ public class AnaliseSintatica {
                                                 if(lista.get(pos).getToken().equals("t_go")) {
                                                     Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": go deve ser colocado somente no inicio do programa");
                                                 }
-                                                else
+                                                else{
                                                     Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": não reconhecida com um comando "+lista.get(pos).getToken()+" da cadeia = "+lista.get(pos).getCadeia());
-                                            
+                                                }
                                             }
                                         }
                                     }
@@ -109,6 +108,10 @@ public class AnaliseSintatica {
                         }
                     }
                 }
+            }
+            
+            if(lista.get(pos).getToken().equals("t_finish")){
+                pos++;
             }
             //pos++;
            
@@ -328,15 +331,16 @@ public class AnaliseSintatica {
     public void continuarFimSentencaIdentificador(List<Token> lista) {
         boolean flag=false;
         while(pos<lista.size() && !flag) {
-            if((lista.get(pos).getToken().equals("t_fecha_parenteses") || lista.get(pos).getToken().equals("t_fecha_chaves") 
+            if(lista.get(pos).getToken().equals("t_fecha_parenteses") || lista.get(pos).getToken().equals("t_fecha_chaves") 
                 || TipoVariavel(lista.get(pos).getToken()) || lista.get(pos).getToken().equals("t_abre_chaves")
-                || lista.get(pos).getToken().equals("t_identificador"))) {
+                || lista.get(pos).getToken().equals("t_identificador") || lista.get(pos).getToken().equals("t_if")
+                || lista.get(pos).getToken().equals("t_while")) {
                 flag=true;
             }
             else    
                 pos++;
         }
-        pos--;
+      
     }
     
     public void If(List<Token> lista) {
@@ -360,7 +364,6 @@ public class AnaliseSintatica {
                             }
                             else {
                                 pos++;
-                                System.out.println("token 333 = "+lista.get(pos).getToken());
                                 if(pos<lista.size() && lista.get(pos).getToken().equals("t_else")) {
                                     pos++;
                                     if(pos<lista.size() && lista.get(pos).getToken().equals("t_abre_chaves")) {

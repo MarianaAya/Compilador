@@ -71,13 +71,16 @@
                               <Insets />
                            </HBox.margin>
                            <padding>
-                              <Insets bottom="5.0" left="10.0" />
+                              <Insets left="10.0" top="5.0" />
                            </padding>
                         </VBox>
                         <TextArea fx:id="txCodigo" onKeyPressed="#evtKeyPress" prefHeight="423.0" prefWidth="854.0">
                            <font>
                               <Font size="14.0" />
                            </font>
+                           <opaqueInsets>
+                              <Insets top="5.0" />
+                           </opaqueInsets>
                         </TextArea>
                      </children>
                   </HBox>
