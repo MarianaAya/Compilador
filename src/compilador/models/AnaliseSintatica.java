@@ -172,14 +172,16 @@ public class AnaliseSintatica {
      
      
     }
+    public void analisarInteriorFor(List<Token> lista) {
+        
+    }
     public void For(List<Token> lista) {
-        System.out.println("entrei 173");
+        int qtdeErros=0;
         if(pos<lista.size()){
             if(lista.get(pos).getToken().equals("t_abre_parenteses")) {
-                System.out.println("entrei 176");
                 pos++;
+                qtdeErros = Singleton.getErros().size();
                 Definicao(lista,true);
-                System.out.println("181 passei"+lista.get(pos).getCadeia());
                 if(pos<lista.size() && lista.get(pos).getToken().equals("t_virgula")){
                     pos++;
                     
@@ -246,6 +248,7 @@ public class AnaliseSintatica {
         else {
             Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando FOR");
         }
+        
     }
     public void While(List<Token> lista) {
         
@@ -397,6 +400,7 @@ public class AnaliseSintatica {
         
     }
     public void Expressao(List<Token> lista) {
+        int qtdeErros = Singleton.getErros().size();
         if(pos<lista.size()) {
             String token = lista.get(pos).getToken();
             if(Termo(token)) { // x
@@ -417,7 +421,6 @@ public class AnaliseSintatica {
                                     }
                                     pos++;  
                                     
-                                    System.out.println("399 "+lista.get(pos).getToken());
                                 }
                                 else {
                                     Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro na EXPRESSAO, era esperado um identificador ou um número");
@@ -448,6 +451,10 @@ public class AnaliseSintatica {
         }
         else {
             Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro na EXPRESSAO");
+        }
+        
+        if(qtdeErros<Singleton.getErros().size()) {
+            continuarFimSentenca(lista);
         }
     }
     public void Comparacao(List<Token> lista) {
