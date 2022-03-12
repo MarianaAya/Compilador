@@ -321,6 +321,7 @@ public class AnaliseSintatica {
                 pos++;*/
 
             continuarFimSentencaIdentificador(lista);
+         
             //pos++;
 
         }
@@ -341,43 +342,49 @@ public class AnaliseSintatica {
       
     }
     
+    public void Else(List<Token> lista) {
+        pos++;
+        if(pos<lista.size() && lista.get(pos).getToken().equals("t_abre_chaves")) {
+            pos++;
+            Comandos(lista,true);
+            if(!(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves"))) {
+                Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando ELSE, era esperado }",lista.get(pos-1).getLinha(),pos-1);
+
+            }
+            else
+                pos++;
+
+        }
+        else {
+            Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando ELSE, era esperado {",lista.get(pos-1).getLinha(),pos-1);
+        }
+    }
     public void If(List<Token> lista) {
-        
+        int qtdeErros = Singleton.getErros().size();
         if(pos<lista.size()) {
             if(lista.get(pos).getToken().equals("t_abre_parenteses")) {
                 pos++;
                 
                 Comparacao(lista);
-            
                 if(pos<lista.size()){
                     pos++;
+                    System.out.println("370 passei "+lista.get(pos).getToken());
+                    if(lista.get(pos-1).getToken().equals("t_fecha_parenteses"))
+                        pos--;
                     if(lista.get(pos).getToken().equals("t_fecha_parenteses")) {
                         pos++;
                         if(pos<lista.size() && lista.get(pos).getToken().equals("t_abre_chaves")) {
 
                             pos++;
                             Comandos(lista,true);
+                           
                             if(!(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves"))) {
                                 Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando IF, era esperado }",lista.get(pos-1).getLinha(),pos-1);
                             }
                             else {
                                 pos++;
                                 if(pos<lista.size() && lista.get(pos).getToken().equals("t_else")) {
-                                    pos++;
-                                    if(pos<lista.size() && lista.get(pos).getToken().equals("t_abre_chaves")) {
-                                        pos++;
-                                        Comandos(lista,true);
-                                        if(!(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves"))) {
-                                            Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando ELSE, era esperado }",lista.get(pos-1).getLinha(),pos-1);
-
-                                        }
-                                        else
-                                            pos++;
-                                        
-                                    }
-                                    else {
-                                        Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando ELSE, era esperado {",lista.get(pos-1).getLinha(),pos-1);
-                                    }
+                                    Else(lista);
 
                                 }
                             }
@@ -404,6 +411,26 @@ public class AnaliseSintatica {
             Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando IF",lista.get(pos-1).getLinha(),pos-1);
         }
         
+        if(qtdeErros<Singleton.getErros().size()) {
+            System.out.println("410 passei "+lista.get(pos).getCadeia());
+            if(pos<lista.size() && lista.get(pos).getToken().equals("t_abre_chaves")) {
+                pos++;
+                
+                Comandos(lista,true);
+                
+                if(!(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves"))){
+                    System.out.println("418 passei" + lista.get(pos).getCadeia());
+                    Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando IF, era esperado } 419",lista.get(pos-1).getLinha(),pos-1);
+                }
+               
+                pos++;
+                if(pos<lista.size() && lista.get(pos).getToken().equals("t_else")) {
+                    Else(lista);
+
+                }
+                
+            }
+        }
     }
     public void Expressao(List<Token> lista) {
         int qtdeErros = Singleton.getErros().size();
@@ -596,14 +623,14 @@ public class AnaliseSintatica {
     public void continuarFimSentenca(List<Token> lista) {
         boolean flag=false;
         while(pos<lista.size() && !flag) {
-            if((lista.get(pos).getToken().equals("t_fecha_parenteses") || lista.get(pos).getToken().equals("t_fecha_chaves") 
-                || TipoVariavel(lista.get(pos).getToken()) || lista.get(pos).getToken().equals("t_abre_chaves"))) {
+            if((lista.get(pos).getToken().equals("t_abre_chaves") 
+                || TipoVariavel(lista.get(pos).getToken()))) {
                 flag=true;
             }
             else    
                 pos++;
         }
-        pos--;
+       
     }
    
 }
