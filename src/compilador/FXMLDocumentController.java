@@ -227,8 +227,8 @@ public class FXMLDocumentController implements Initializable {
                     arq=new RandomAccessFile(file,"rw");
                     arq.setLength(0);
                     arq.writeBytes(txCodigo.getText());
+                    miFechar.setDisable(false);
                     arq.close();
-                    file_selecionado=null;
                 }
 
             }
@@ -273,11 +273,12 @@ public class FXMLDocumentController implements Initializable {
             alert.setContentText(e.getMessage());
         }
 
-        file_selecionado=null;
+        
     }
     @FXML
     private void evtFechar(ActionEvent event) {
         if(file_selecionado!=null) {
+            salvar();
             vBoxLabels.getChildren().removeAll(vBoxLabels.getChildren());
             linha=1;
             Label label = criarLabel(1);
