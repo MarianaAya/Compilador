@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Singleton {
     private static List<Token> tokens=new ArrayList<>();
-    private static List<String> erros=new ArrayList<>();
+    private static List<Erro> erros=new ArrayList<>();
     public static int pos;
     public static List<Token> getTokensResultado()
     {
@@ -23,12 +23,15 @@ public class Singleton {
     
     
     
-    public static List<String> getErros()
+    public static List<Erro> getErros()
     {
         return erros;
     }
-    public static void addErro(String resultado){
-        erros.add(resultado);
+    public static void addErro(String msg, int linha){
+        erros.add(new Erro(msg,linha));
+    }
+    public static void addErro(String msg){
+        erros.add(new Erro(msg,0));
     }
     public static void removeAllErros(){
         erros.clear();

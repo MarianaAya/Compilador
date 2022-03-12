@@ -66,12 +66,12 @@
                <content>
                   <HBox>
                      <children>
-                        <VBox fx:id="vBoxLabels" prefWidth="44.0">
+                        <VBox fx:id="vBoxLabels" prefWidth="44.0" style="-fx-background-color: #f2f2f2;">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
                            <padding>
-                              <Insets left="10.0" top="5.0" />
+                              <Insets top="5.0" />
                            </padding>
                         </VBox>
                         <TextArea fx:id="txCodigo" onKeyPressed="#evtKeyPress" prefHeight="423.0" prefWidth="854.0">

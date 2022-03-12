@@ -7,6 +7,7 @@ package compilador;
 
 import compilador.models.AnaliseLexica;
 import compilador.models.AnaliseSintatica;
+import compilador.models.Erro;
 import compilador.models.Singleton;
 import java.io.File;
 import java.io.RandomAccessFile;
@@ -18,6 +19,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -63,6 +65,8 @@ public class FXMLDocumentController implements Initializable {
     private Label criarLabel(int lin) {
         Label label=new Label(""+lin);
         label.setId("lb"+lin);
+        label.setPrefWidth(44);
+        label.setAlignment(Pos.CENTER);
         Font fonte = label.getFont();
         label.setFont(new Font(fontSize));
         
@@ -71,12 +75,19 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void evtCompilar(ActionEvent event) {
         System.out.println("Compilei");
+        Label label;
+        for(int i=0;i<vBoxLabels.getChildren().size();i++) {
+            label = (Label)vBoxLabels.getChildren().get(i);
+            label.setStyle("-fx-background-color:#f2f2f2");
+            
+        }
+        
         lbErro.setText("");
         Singleton.removeAllResultadoToken();
         Singleton.removeAllErros();
         AnaliseLexica al=new AnaliseLexica();
         al.receberPrograma(txCodigo.getText());
-        List<String> erros=Singleton.getErros();
+        List<Erro> erros=Singleton.getErros();
         
         AnaliseSintatica as=new AnaliseSintatica();
         if(erros.size()==0){
@@ -102,14 +113,22 @@ public class FXMLDocumentController implements Initializable {
             else {
                 lbErro.setText("");
                 for(int i=0;i<erros.size();i++) {
-                    lbErro.setText(lbErro.getText()+"\n"+erros.get(i));
+                    lbErro.setText(lbErro.getText()+"\n"+erros.get(i).getMensagem());
+                    if(erros.get(i).getLinha()>0) {
+                        label = (Label)vBoxLabels.getChildren().get(erros.get(i).getLinha()-1);
+                        label.setStyle("-fx-background-color:#ff9999");
+                    }
                 }
             }
         }
         else {
             lbErro.setText("");
             for(int i=0;i<erros.size();i++) {
-                lbErro.setText(lbErro.getText()+"\n"+erros.get(i));
+                lbErro.setText(lbErro.getText()+"\n"+erros.get(i).getMensagem());
+                if(erros.get(i).getLinha()>0) {
+                    label = (Label)vBoxLabels.getChildren().get(erros.get(i).getLinha()-1);
+                    label.setStyle("-fx-background-color:#ff9999");
+                }
             }
         }
         
@@ -168,6 +187,7 @@ public class FXMLDocumentController implements Initializable {
         
     }
     private void corrigirLabel(String codigo) {
+        List<Erro> erros=Singleton.getErros();
         linha=1;
         Label label;
         label=criarLabel(linha);
@@ -181,6 +201,13 @@ public class FXMLDocumentController implements Initializable {
                 vBoxLabels.getChildren().add(label);
                 linha=linha+1;
                 
+            }
+        }
+        
+        for(int i=0;i<erros.size();i++) {
+            if(erros.get(i).getLinha()>0 && erros.get(i).getLinha()-1<vBoxLabels.getChildren().size()) {
+                label = (Label)vBoxLabels.getChildren().get(erros.get(i).getLinha()-1);
+                label.setStyle("-fx-background-color:#ff9999");
             }
         }
    

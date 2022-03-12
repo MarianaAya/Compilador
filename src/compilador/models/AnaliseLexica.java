@@ -24,7 +24,7 @@ public class AnaliseLexica {
                             posCadeia += linhas[i].length();
                         token=tab.descobrirToken(cadeias[j]);
                         if(token==null)
-                           Singleton.addErro("Erro Léxico na Linha "+(i+1)+": Não foi possivel descobrir token da cadeia "+cadeias[j]);
+                           Singleton.addErro("Erro Léxico na Linha "+(i+1)+": Não foi possivel descobrir token da cadeia "+cadeias[j], i+1);
                         else{
                             Singleton.addResultadoToken(new Token(token.getToken(),cadeias[j],i+1,posCadeia));
                         }
