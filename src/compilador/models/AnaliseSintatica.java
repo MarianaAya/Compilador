@@ -50,7 +50,7 @@ public class AnaliseSintatica {
     
     public void Comandos(List<Token> lista, boolean flag) { //a flag é para dizer que está dentro de um if, while ...
         while(pos+1<lista.size()){
-
+            System.out.println("53 "+lista.get(pos).getCadeia()+" "+flag);
             if(lista.get(pos).getToken().equals("t_identificador")){ //nesse caso ele pode ser uma definicao ou uma expressao
                 Definicao(lista,false);
             }
@@ -77,6 +77,7 @@ public class AnaliseSintatica {
                             }
                             else{
                                 if(lista.get(pos).getToken().equals("t_fecha_chaves") && flag){
+                                    System.out.println("80 entrei");
                                     flag=false;
                                     break;
                                 }
@@ -130,6 +131,7 @@ public class AnaliseSintatica {
                                 pos--;
                                 
                                 Expressao(lista);
+                                System.out.println("134 "+lista.get(pos).getCadeia());
                             }
                            
                         }
@@ -202,7 +204,7 @@ public class AnaliseSintatica {
                                     if(pos<lista.size() && lista.get(pos).getToken().equals("t_abre_chaves")) {
                                         pos++;
                                         Comandos(lista,true);
-                                        
+                                        System.out.println("205 "+lista.get(pos).getCadeia());
                                         if(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves")) {
                                             pos++;
                                         }
@@ -313,9 +315,13 @@ public class AnaliseSintatica {
         }
         else
             Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando DECLARACAO");
-        if(Singleton.getErros().size()>qtdeErros) {
+        if(Singleton.getErros().size()>qtdeErros) {/*
+            if(Singleton.getErros().get(Singleton.getErros().size()-1).contains(";"))
+                pos++;*/
+
             continuarFimSentencaIdentificador(lista);
             pos++;
+            System.out.println("319 "+lista.get(pos).getCadeia());
         }
     }
     
@@ -360,14 +366,13 @@ public class AnaliseSintatica {
                                     if(pos<lista.size() && lista.get(pos).getToken().equals("t_abre_chaves")) {
                                         pos++;
                                         Comandos(lista,true);
-                                        if(Singleton.getErros().size()==0) {
-                                            if(!(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves"))) {
-                                                Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando ELSE, era esperado }");
+                                        if(!(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves"))) {
+                                            Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando ELSE, era esperado }");
 
-                                            }
-                                            else
-                                                pos++;
                                         }
+                                        else
+                                            pos++;
+                                        
                                     }
                                     else {
                                         Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando ELSE, era esperado {");
@@ -452,10 +457,11 @@ public class AnaliseSintatica {
         else {
             Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro na EXPRESSAO");
         }
-        
+        System.out.println("455 "+lista.get(pos).getCadeia());
         if(qtdeErros<Singleton.getErros().size()) {
             continuarFimSentenca(lista);
         }
+        System.out.println("459 "+lista.get(pos).getCadeia());
     }
     public void Comparacao(List<Token> lista) {
         
