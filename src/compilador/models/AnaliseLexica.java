@@ -16,12 +16,12 @@ public class AnaliseLexica {
                 cadeias=linhas[i].split(" ");
                 j=0;
                 while(j<cadeias.length){
+                  
                     cadeias[j]=cadeias[j].replace("\t","");
                     if(cadeias[j].length()>0){
                         //pegar o index da cadeia na linha
                         int posCadeia = linhas[i].indexOf(cadeias[j]);
-                        for(int x=0;x<i;x++) //somar a quantidade de caracteres da linha 0 até a atual
-                            posCadeia += linhas[i].length();
+
                         token=tab.descobrirToken(cadeias[j]);
                         if(token==null)
                            Singleton.addErro("Erro Léxico na Linha "+(i+1)+": Não foi possivel descobrir token da cadeia "+cadeias[j], i+1);

@@ -9,9 +9,11 @@ import compilador.models.AnaliseLexica;
 import compilador.models.AnaliseSintatica;
 import compilador.models.Erro;
 import compilador.models.Singleton;
+import compilador.models.Token;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -92,6 +94,7 @@ public class FXMLDocumentController implements Initializable {
         AnaliseSintatica as=new AnaliseSintatica();
         if(erros.size()==0){
             as.receberPrograma(txCodigo);
+            correcoesSintaticas();
             if(Singleton.getErros().size()==0){
                 try
                 {
@@ -133,6 +136,43 @@ public class FXMLDocumentController implements Initializable {
             }
         }
         
+    }
+    
+    private void correcoesSintaticas() {
+        List<Token> tokens=Singleton.getTokensResultado();
+        List<Erro> erros=Singleton.getErros();
+        List<Erro> errosExclusao = new ArrayList<>();
+        String codigo=txCodigo.getText();
+        
+        
+
+        System.out.println("qtde erros: "+erros.size());
+        for(int i=0;i<erros.size();i++) {
+            if(erros.get(i).getMensagem().contains(";")) {
+                errosExclusao.add(erros.get(i));
+                String linhas[]=txCodigo.getText().split("\n");
+   
+                //pego a posicao do token na lista
+                int posToken=erros.get(i).getPos();
+                int lin = tokens.get(posToken).getLinha(); //pego a linha
+               
+                String auxCodigo = "";
+                for(int l = 0; l<lin-1;l++) {
+                    auxCodigo+=linhas[l]+"\n";
+                }
+                
+                auxCodigo+=linhas[lin-1]+" ;\n";
+           
+                for(int l = lin; l<linhas.length;l++) {
+                    auxCodigo+=linhas[l]+"\n";
+                }
+                txCodigo.setText(auxCodigo);
+                               
+                           
+            }
+        }
+        
+        Singleton.getErros().removeAll(errosExclusao);
     }
 
     @FXML

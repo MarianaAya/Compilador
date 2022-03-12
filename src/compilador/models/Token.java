@@ -18,7 +18,7 @@ public class Token {
         this.token = token;
         this.cadeia = cadeia;
         this.linha = linha;
-        this.pos=0;
+        this.pos=pos;
     }
 
     public String getToken() {
@@ -43,6 +43,14 @@ public class Token {
 
     public void setLinha(int linha) {
         this.linha = linha;
+    }
+
+    public int getPos() {
+        return pos;
+    }
+
+    public void setPos(int pos) {
+        this.pos = pos;
     }
     
     

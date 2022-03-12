@@ -27,6 +27,9 @@ public class Singleton {
     {
         return erros;
     }
+    public static void addErro(String msg, int linha, int pos){
+        erros.add(new Erro(msg,linha,pos));
+    }
     public static void addErro(String msg, int linha){
         erros.add(new Erro(msg,linha));
     }
