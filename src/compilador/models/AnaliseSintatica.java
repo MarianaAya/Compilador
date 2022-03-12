@@ -321,7 +321,7 @@ public class AnaliseSintatica {
                 pos++;*/
 
             continuarFimSentencaIdentificador(lista);
-            pos++;
+            //pos++;
 
         }
     }
