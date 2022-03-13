@@ -144,11 +144,11 @@ public class FXMLDocumentController implements Initializable {
         List<Erro> errosExclusao = new ArrayList<>();
         String codigo=txCodigo.getText();
         
-        
+        int qtdeErrosCorrigidos = 0;
 
-        System.out.println("qtde erros: "+erros.size());
         for(int i=0;i<erros.size();i++) {
             if(erros.get(i).getMensagem().contains(";")) {
+                qtdeErrosCorrigidos++;
                 errosExclusao.add(erros.get(i));
                 String linhas[]=txCodigo.getText().split("\n");
    
@@ -179,15 +179,25 @@ public class FXMLDocumentController implements Initializable {
                 Singleton.getTokensResultado().add(0, new Token("t_go","go"));
 
                 txCodigo.setText("go"+txCodigo.getText());
+                qtdeErrosCorrigidos++;
             }
             if(erros.get(i).getMensagem().equals("Erro sintático: programa não tem FINISH")) {
                 errosExclusao.add(erros.get(i));
                 Singleton.getTokensResultado().add(new Token("t_finish","finish"));
 
                 txCodigo.setText(txCodigo.getText()+"finish");
+                qtdeErrosCorrigidos++;
             }
         }
         Singleton.getErros().removeAll(errosExclusao);
+        
+        if(qtdeErrosCorrigidos>0) {
+            Alert alert=new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText("Correçõs foram feitas");
+            alert.setContentText("Foram encontrados erros durante a compilação\nFoi corrigido: "+qtdeErrosCorrigidos+" erros");
+            alert.showAndWait();
+        }
+        
         
     }
 
