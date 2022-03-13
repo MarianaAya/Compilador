@@ -169,10 +169,26 @@ public class FXMLDocumentController implements Initializable {
                 txCodigo.setText(auxCodigo);
                                
                            
+            }  
+        }
+        Singleton.getErros().removeAll(errosExclusao);
+        errosExclusao.removeAll(errosExclusao);
+        for(int i=0;i<erros.size();i++){
+            if(erros.get(i).getMensagem().equals("Erro sintático: programa não começa com GO")) {
+                errosExclusao.add(erros.get(i));
+                Singleton.getTokensResultado().add(0, new Token("t_go","go"));
+
+                txCodigo.setText("go"+txCodigo.getText());
+            }
+            if(erros.get(i).getMensagem().equals("Erro sintático: programa não tem FINISH")) {
+                errosExclusao.add(erros.get(i));
+                Singleton.getTokensResultado().add(new Token("t_finish","finish"));
+
+                txCodigo.setText(txCodigo.getText()+"finish");
             }
         }
-        
         Singleton.getErros().removeAll(errosExclusao);
+        
     }
 
     @FXML

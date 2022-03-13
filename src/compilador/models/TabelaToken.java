@@ -71,7 +71,7 @@ public class TabelaToken {
         //Verificar se é número inteiro
         if(!flag) {
             i=0;
-            regex="[0-9]+";
+            regex="[+|-]?[0-9]+";
             if(cadeia.matches(regex)){
                 flag=true;
                 escolhido=new Token("t_numero_int",cadeia);
@@ -80,7 +80,7 @@ public class TabelaToken {
         //Verificar se é notação cientifica
         if(!flag) {
             i=0;
-            regex="[0-9]+.?[0-9]*E[0-9]+";
+            regex="[+|-]?[0-9]+.?[0-9]*E-?[0-9]+";
             if(cadeia.matches(regex)){
                 flag=true;
                 escolhido=new Token("t_numero_cientifico",cadeia);
@@ -89,7 +89,7 @@ public class TabelaToken {
         //Verificar se é número float
         if(!flag) {
             i=0;
-            regex="[0-9]+.[0-9]+";
+            regex="[+|-]?[0-9]+.[0-9]+";
             if(cadeia.matches(regex)){
                 flag=true;
                 escolhido=new Token("t_numero_float",cadeia);
