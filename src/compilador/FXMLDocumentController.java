@@ -147,7 +147,7 @@ public class FXMLDocumentController implements Initializable {
         int qtdeErrosCorrigidos = 0;
 
         for(int i=0;i<erros.size();i++) {
-            if(erros.get(i).getMensagem().contains(";")) {
+            if(erros.get(i).getMensagem().contains(";") && !erros.get(i).getMensagem().contains("consecutivos")) {
                 qtdeErrosCorrigidos++;
                 errosExclusao.add(erros.get(i));
                 String linhas[]=txCodigo.getText().split("\n");
@@ -194,7 +194,7 @@ public class FXMLDocumentController implements Initializable {
         if(qtdeErrosCorrigidos>0) {
             Alert alert=new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Correçõs foram feitas");
-            alert.setContentText("Foram encontrados erros durante a compilação\nFoi corrigido: "+qtdeErrosCorrigidos+" erros");
+            alert.setContentText("Foram encontrados erros durante a compilação\nForam feitas "+qtdeErrosCorrigidos+" correções");
             alert.showAndWait();
         }
         

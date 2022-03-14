@@ -126,6 +126,10 @@ public class AnaliseSintatica {
             if(pos<lista.size() && lista.get(pos).getToken().equals("t_else") && flag){
                 flag=false;
             }
+            if(pos<lista.size() && lista.get(pos).getToken().equals("t_pontovirgula")){
+                Singleton.addErro("Erro sintático na linha "+lista.get(pos).getLinha()+": não pode haver ; consecutivos ",lista.get(pos).getLinha(),pos);
+                pos++;
+            }
             //pos++;
            
         }
@@ -389,7 +393,8 @@ public class AnaliseSintatica {
             if(lista.get(pos).getToken().equals("t_fecha_parenteses") || lista.get(pos).getToken().equals("t_fecha_chaves") 
                 || TipoVariavel(lista.get(pos).getToken()) || lista.get(pos).getToken().equals("t_abre_chaves")
                 || lista.get(pos).getToken().equals("t_identificador") || lista.get(pos).getToken().equals("t_if")
-                || lista.get(pos).getToken().equals("t_while")) {
+                || lista.get(pos).getToken().equals("t_while") || lista.get(pos).getToken().equals("t_for")
+                || lista.get(pos).getToken().equals("t_pontovirgula")) {
                 flag=true;
             }
             else    
@@ -684,8 +689,10 @@ public class AnaliseSintatica {
     public void continuarFimSentenca(List<Token> lista) {
         boolean flag=false;
         while(pos<lista.size() && !flag) {
-            if((lista.get(pos).getToken().equals("t_abre_chaves") || lista.get(pos).getToken().equals("t_fecha_chaves") 
-                || TipoVariavel(lista.get(pos).getToken()) || lista.get(pos).getToken().equals("t_pontovirgula"))) {
+            if(lista.get(pos).getToken().equals("t_abre_chaves") || lista.get(pos).getToken().equals("t_fecha_chaves") 
+                || TipoVariavel(lista.get(pos).getToken()) || lista.get(pos).getToken().equals("t_pontovirgula")
+                    || lista.get(pos).getToken().equals("t_if")
+                || lista.get(pos).getToken().equals("t_while") || lista.get(pos).getToken().equals("t_for")) {
                 flag=true;
             }
             else    
