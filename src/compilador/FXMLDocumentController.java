@@ -143,7 +143,7 @@ public class FXMLDocumentController implements Initializable {
         List<Erro> erros=Singleton.getErros();
         List<Erro> errosExclusao = new ArrayList<>();
         String codigo=txCodigo.getText();
-        
+        int qtdeTab = 0;
         int qtdeErrosCorrigidos = 0;
 
         for(int i=0;i<erros.size();i++) {
@@ -151,7 +151,7 @@ public class FXMLDocumentController implements Initializable {
                 qtdeErrosCorrigidos++;
                 errosExclusao.add(erros.get(i));
                 String linhas[]=txCodigo.getText().split("\n");
-   
+                
                 //pego a posicao do token na lista
                 int posToken=erros.get(i).getPos();
                 int lin = tokens.get(posToken).getLinha(); //pego a linha
