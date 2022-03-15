@@ -90,7 +90,7 @@ public class FXMLDocumentController implements Initializable {
         AnaliseLexica al=new AnaliseLexica();
         al.receberPrograma(txCodigo.getText());
         List<Erro> erros=Singleton.getErros();
-        
+        correcaoLexica();
         AnaliseSintatica as=new AnaliseSintatica();
         if(erros.size()==0){
             as.receberPrograma(txCodigo);
@@ -126,6 +126,7 @@ public class FXMLDocumentController implements Initializable {
             }
         }
         else {
+            
             lbErro.setText("");
             for(int i=0;i<erros.size();i++) {
                 lbErro.setText(lbErro.getText()+"\n"+erros.get(i).getMensagem());
@@ -137,7 +138,36 @@ public class FXMLDocumentController implements Initializable {
         }
         
     }
-    
+    private void correcaoLexica() {
+        List<Token> tokens=Singleton.getTokensResultado();
+        System.out.println(""+tokens.size());
+        String linhas[]=txCodigo.getText().split("\n");
+        int qtdeTab,pos=0;
+        String novo="";
+        for(int i = 0; i<linhas.length;i++) {
+            qtdeTab=0;
+            for(int j=0;j<linhas[i].length();j++) {
+                if(linhas[i].charAt(j)== '\t') {
+                    qtdeTab++;
+                }
+            }
+            
+            
+            for(int j=0;j<qtdeTab;j++) {
+                novo+='\t';
+            }
+            
+            while(pos<tokens.size() && tokens.get(pos).getLinha()==i+1) {
+                novo+=tokens.get(pos).getCadeia()+" ";
+                pos++;
+                
+            }
+            novo+='\n';
+            
+        }
+        txCodigo.setText(novo);
+        corrigirLabel(txCodigo.getText());
+    }
     private void correcoesSintaticas() {
         List<Token> tokens=Singleton.getTokensResultado();
         List<Erro> erros=Singleton.getErros();
@@ -178,7 +208,7 @@ public class FXMLDocumentController implements Initializable {
                 errosExclusao.add(erros.get(i));
                 Singleton.getTokensResultado().add(0, new Token("t_go","go"));
 
-                txCodigo.setText("go"+txCodigo.getText());
+                txCodigo.setText("go "+txCodigo.getText());
                 qtdeErrosCorrigidos++;
             }
             if(erros.get(i).getMensagem().equals("Erro sintático: programa não tem FINISH")) {
@@ -190,7 +220,7 @@ public class FXMLDocumentController implements Initializable {
             }
         }
         Singleton.getErros().removeAll(errosExclusao);
-        
+        corrigirLabel(txCodigo.getText());
         if(qtdeErrosCorrigidos>0) {
             Alert alert=new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Correçõs foram feitas");

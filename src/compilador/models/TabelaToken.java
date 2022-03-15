@@ -125,5 +125,39 @@ public class TabelaToken {
         this.tabela = tabela;
     }
     
+    public List<Token> tentativaToken(String cadeia) {
+        List<Token> lista = new ArrayList<>();
+        Token token=null,aux=null;
+        int pos=0;
+        String palavra="";
+        while(pos<cadeia.length()){
+            palavra+=cadeia.charAt(pos);
+            token=descobrirToken(palavra);
+            if(token==null) {
+                if(aux==null) {
+                    lista.add(new Token("",cadeia.substring(pos)));
+                    pos=cadeia.length();
+                }
+                else {
+                    lista.add(aux);
+                    palavra="";
+                    aux=null;
+                }
+                
+            }
+            else {
+                aux=token;
+                pos++;
+            }
+
+
+        }
+        
+        if(aux!=null) {
+            lista.add(aux);
+        }
+        return lista;
+    }
+    
     
 }
