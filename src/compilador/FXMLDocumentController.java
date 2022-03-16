@@ -175,11 +175,12 @@ public class FXMLDocumentController implements Initializable {
         String codigo=txCodigo.getText();
         int qtdeTab = 0;
         int qtdeErrosCorrigidos = 0;
-
+        String mensagem = "";
         for(int i=0;i<erros.size();i++) {
             if(erros.get(i).getMensagem().contains(";") && !erros.get(i).getMensagem().contains("consecutivos")) {
                 qtdeErrosCorrigidos++;
                 errosExclusao.add(erros.get(i));
+                mensagem+=erros.get(i).getMensagem()+"\n";
                 String linhas[]=txCodigo.getText().split("\n");
                 
                 //pego a posicao do token na lista
@@ -205,6 +206,7 @@ public class FXMLDocumentController implements Initializable {
         errosExclusao.removeAll(errosExclusao);
         for(int i=0;i<erros.size();i++){
             if(erros.get(i).getMensagem().equals("Erro sintático: programa não começa com GO")) {
+                mensagem+=erros.get(i).getMensagem()+"\n";
                 errosExclusao.add(erros.get(i));
                 Singleton.getTokensResultado().add(0, new Token("t_go","go"));
 
@@ -212,6 +214,7 @@ public class FXMLDocumentController implements Initializable {
                 qtdeErrosCorrigidos++;
             }
             if(erros.get(i).getMensagem().equals("Erro sintático: programa não tem FINISH")) {
+                mensagem+=erros.get(i).getMensagem()+"\n";
                 errosExclusao.add(erros.get(i));
                 Singleton.getTokensResultado().add(new Token("t_finish","finish"));
 
@@ -224,7 +227,8 @@ public class FXMLDocumentController implements Initializable {
         if(qtdeErrosCorrigidos>0) {
             Alert alert=new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText("Correçõs foram feitas");
-            alert.setContentText("Foram encontrados erros durante a compilação\nForam feitas "+qtdeErrosCorrigidos+" correções");
+            alert.setContentText("Foram encontrados erros durante a compilação\nForam feitas "+qtdeErrosCorrigidos+" correções\n"
+                                    +mensagem);
             alert.showAndWait();
         }
         
@@ -326,6 +330,7 @@ public class FXMLDocumentController implements Initializable {
                     arq.writeBytes(txCodigo.getText());
                     miFechar.setDisable(false);
                     arq.close();
+                    
                 }
 
             }

@@ -3,9 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/USER/Documents/7°termo/C/1bim/0903/Compilador/src/compilador/models/Erro.java</file>
-            <file>file:/C:/Users/USER/Documents/7°termo/C/1bim/0903/Compilador/src/compilador/models/Singleton.java</file>
+            <file>file:/C:/Users/USER/Documents/7°termo/C/1bim/0903/Compilador/src/compilador/models/AnaliseLexica.java</file>
             <file>file:/C:/Users/USER/Documents/7°termo/C/1bim/0903/Compilador/src/compilador/FXMLDocumentController.java</file>
+            <file>file:/C:/Users/USER/Documents/7°termo/C/1bim/0903/Compilador/src/compilador/models/TabelaToken.java</file>
             <file>file:/C:/Users/USER/Documents/7°termo/C/1bim/0903/Compilador/src/compilador/models/Token.java</file>
             <file>file:/C:/Users/USER/Documents/7°termo/C/1bim/0903/Compilador/src/compilador/models/AnaliseSintatica.java</file>
         </group>
