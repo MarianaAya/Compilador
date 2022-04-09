@@ -64,7 +64,6 @@ public class AnaliseSemantica {
                 proxToken();
                 Token token = lista.get(pos);
                 
-                System.out.println("67 "+token.getCadeia());
                 int pos = Singleton.getPosSimbolo(token_identificador.getCadeia());
                 if(pos == -1) {
                     Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : "+token_identificador.getCadeia()+" não foi declarada",token.getLinha());
@@ -84,8 +83,10 @@ public class AnaliseSemantica {
                             Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : "+token_identificador.getCadeia()+" não pode receber string",token.getLinha());
                             
                         }
-                        else {
-                            Singleton.getSimbolos().get(pos).setValor(token.getCadeia());
+                        else { //é quando a variavel é um número, sendo assim pode haver uma conta
+                            double resultado = Operacao();
+                            System.out.println("88 resultado = "+resultado);
+                            Singleton.getSimbolos().get(pos).setValor(""+resultado);
                         }
                     }
                     
@@ -94,13 +95,127 @@ public class AnaliseSemantica {
                 
             }
             
+            if(lista.get(pos).getToken().equals("t_abre_chaves")) { //vou sair de uma estrutura
+                break;
+            }
+            
         }
         
     }
+    public void pularAteFechaChaves() {
+        while(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves")) {
+            pos++;
+        }
+    }
+    public double getValor(Token token) {
+        double valor = 0;
+        if(token.getToken().equals("t_identificador")) {
+            int pos = Singleton.getPosSimbolo(token.getCadeia());
+            if(pos == -1) {
+               Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : "+token.getCadeia()+" não foi declarada",token.getLinha());
+            }
+            else {
+               if(Singleton.getSimbolos().get(pos).getValor().equals("undefined")){
+                   Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : "+token.getCadeia()+" não foi inicializads",token.getLinha());
+               }
+               else {
+                   valor = Double.parseDouble(Singleton.getSimbolos().get(pos).getValor());
+               }
+            }
+        }
+        else {
+            valor = Double.parseDouble(token.getCadeia());
+        }
+        return valor;
+    }
+    public double Conta(double primeiro, double segundo, String sinal) {
+        double resultado = 0;
+        switch(sinal) {
+            case "+": resultado = primeiro + segundo;
+                break;
+            case "-": resultado = primeiro - segundo;
+                break;
+            case "*": resultado = primeiro * segundo;
+                break;
+            case "/": resultado = primeiro / segundo;
+                break;
+        }
+        
+        return resultado;
+        
+    }
+    public double Operacao() {
+        double resultado = 0;
+        double termo = 0;
+        String sinal="";
+        resultado = getValor(lista.get(pos));
+        pos++;
+        while(pos<lista.size() && (SinalOperacao(lista.get(pos).getToken()) || Termo(lista.get(pos).getToken()))) {
+            if(Termo(lista.get(pos).getToken())) {
+                termo = getValor(lista.get(pos));
+                resultado = Conta(resultado,termo,sinal);
+            }
+            if(SinalOperacao(lista.get(pos).getToken())) {
+                sinal = lista.get(pos).getCadeia();
+            }
+            pos++;
+        }
+        return resultado;
+    }
     public void While() {
+        proxToken();
+        Token primeiroTermo = lista.get(pos);
+        Token segundoTermo = null;
+        Token sinalComparacao = null;
+        proxToken();
+        if(SinalComparacao(lista.get(pos).getToken())) {
+            sinalComparacao = lista.get(pos);
+            proxToken();
+            segundoTermo = lista.get(pos);
+            proxToken();
+            //analisar primeiro termo
+            double primeiro = Double.parseDouble(primeiroTermo.getCadeia());
+            //analisar segundo termo
+            double segundo = Double.parseDouble(segundoTermo.getCadeia());
+            
+            boolean resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia());
+            
+            if(resultado) {
+                analisarComandos();
+            }
+            else {
+                pularAteFechaChaves();
+            }
+        }
         
     }
     
+    public boolean Comparacao(double primeiro, double segundo, String sinal) {
+        boolean flag=false;
+        switch(sinal) {
+            case ">": if(primeiro>segundo)
+                        flag = true;
+                break;
+            case "<": if(primeiro<=segundo)
+                        flag = true;
+                break;
+            case ">=": if(primeiro>=segundo)
+                        flag = true;
+                break;
+            case "<=": if(primeiro<=segundo)
+                        flag = true;
+                break;
+            case "==": if(primeiro==segundo)
+                        flag = true;
+                break;
+            case "!=": if(primeiro!=segundo)
+                        flag = true;
+                break;
+               
+        }
+        
+        return flag;
+    }
     public boolean TipoVariavel(String token) {
         if(token.equals("t_tipo_int") || token.equals("t_tipo_float") || token.equals("t_tipo_string")
                 || token.equals("t_tipo_cientifico")) {
@@ -118,5 +233,23 @@ public class AnaliseSemantica {
         if(token.equals("t_tipo_string"))
             return "string";
         return "";
+    }
+   public boolean SinalOperacao(String token) {
+        if(token.equals("t_positivo") || token.equals("t_negativo") || token.equals("t_divisao") || token.equals("t_multiplicacao"))
+            return true;
+        return false;
+    }
+    public boolean SinalComparacao(String token) {
+        if(token.equals("t_maior") || token.equals("t_menor") || token.equals("t_maior_igual") || token.equals("t_menor_igual")
+           || token.equals("t_igual") || token.equals("t_diferente")) {
+            return true;
+        }
+        return false;
+    }
+    public boolean Termo(String token) {
+        if(token.equals("t_identificador") || token.equals("t_numero_int") || token.equals("t_numero_float") || token.equals("t_numero_cientifico")){
+            return true;
+        }
+        return false;
     }
 }
