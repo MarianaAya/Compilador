@@ -111,6 +111,7 @@ public class TabelaToken {
             if(cadeia.charAt(0)==34 && cadeia.charAt(cadeia.length()-1)==34) {
                 escolhido = new Token("t_string",cadeia);
             }
+           
         }
       
         

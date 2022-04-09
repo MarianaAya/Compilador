@@ -6,8 +6,10 @@
 package compilador;
 
 import compilador.models.AnaliseLexica;
+import compilador.models.AnaliseSemantica;
 import compilador.models.AnaliseSintatica;
 import compilador.models.Erro;
+import compilador.models.Simbolo;
 import compilador.models.Singleton;
 import compilador.models.Token;
 import java.io.File;
@@ -87,30 +89,35 @@ public class FXMLDocumentController implements Initializable {
         lbErro.setText("");
         Singleton.removeAllResultadoToken();
         Singleton.removeAllErros();
+        Singleton.removeAllSimbolos();
         AnaliseLexica al=new AnaliseLexica();
         al.receberPrograma(txCodigo.getText());
         List<Erro> erros=Singleton.getErros();
         correcaoLexica();
         AnaliseSintatica as=new AnaliseSintatica();
+        
         if(erros.size()==0){
             as.receberPrograma(txCodigo);
             correcoesSintaticas();
             if(Singleton.getErros().size()==0){
-                try
-                {
-
-                    Stage stage = new Stage();
-                    Scene scene=new Scene(FXMLLoader.load(getClass().getResource("FXMLSaida.fxml")));
-                    stage.setScene(scene);
-                    stage.setTitle("Saída");
-                    stage.initModality(Modality.APPLICATION_MODAL);
-                    stage.showAndWait();
-
-
+                AnaliseSemantica analiseSemantica = new AnaliseSemantica();
+                analiseSemantica.analisar();
+                List<Simbolo> simbolos=Singleton.getSimbolos();
+                System.out.println("\n---------------- Simbolos -------------------\n");
+                for(int y = 0; y<simbolos.size(); y++) {
+                    System.out.println("token = "+simbolos.get(y).getToken()+" cadeia = "
+                            +simbolos.get(y).getCadeia()+" tipo = "+simbolos.get(y).getTipo()+" valor= "+simbolos.get(y).getValor());
                 }
-                catch(Exception e)
-                {
-                    System.out.println(e);
+                
+                if(erros.size()>0) {
+                    lbErro.setText("");
+                    for(int i=0;i<erros.size();i++) {
+                        lbErro.setText(lbErro.getText()+"\n"+erros.get(i).getMensagem());
+                        if(erros.get(i).getLinha()>0 && erros.get(i).getLinha()-1<vBoxLabels.getChildren().size()) {
+                            label = (Label)vBoxLabels.getChildren().get(erros.get(i).getLinha()-1);
+                            label.setStyle("-fx-background-color:#ff9999");
+                        }
+                    }
                 }
             }
             else {
@@ -123,6 +130,23 @@ public class FXMLDocumentController implements Initializable {
                         label.setStyle("-fx-background-color:#ff9999");
                     }
                 }
+            }
+            
+            try
+            {
+
+                Stage stage = new Stage();
+                Scene scene=new Scene(FXMLLoader.load(getClass().getResource("FXMLSaida.fxml")));
+                stage.setScene(scene);
+                stage.setTitle("Saída");
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.showAndWait();
+
+
+            }
+            catch(Exception e)
+            {
+                System.out.println(e);
             }
         }
         else {

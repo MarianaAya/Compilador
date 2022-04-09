@@ -8,6 +8,7 @@ import java.util.List;
 public class Singleton {
     private static List<Token> tokens=new ArrayList<>();
     private static List<Erro> erros=new ArrayList<>();
+    private static List<Simbolo> simbolos=new ArrayList<>();
     public static int pos;
     public static List<Token> getTokensResultado()
     {
@@ -39,8 +40,40 @@ public class Singleton {
     public static void removeAllErros(){
         erros.clear();
     }
+    //Analise semantica
+    public static List<Simbolo> getSimbolos()
+    {
+        return simbolos;
+    }
+    public static void addSimbolos(Simbolo simbolo){
+        simbolos.add(simbolo);
+    }
     
+    public static void removeAllSimbolos(){
+        simbolos.clear();
+    }
+    public static boolean simboloNaLista(String cadeia) {
+        int i=0;
+        while(i< simbolos.size() && !cadeia.equals(simbolos.get(i).getCadeia())) {
+            i++;
+        }
+        if(i<simbolos.size())
+            return true;
+        else
+            return false;
+    }
     
+    public static int getPosSimbolo(String cadeia) {
+        int i=0;
+        while(i< simbolos.size() && !cadeia.equals(simbolos.get(i).getCadeia())) {
+            i++;
+        }
+        if(i<simbolos.size())
+            return i;
+        else
+            return -1;
+    }
+
   
     
     private Singleton()

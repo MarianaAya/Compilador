@@ -24,7 +24,7 @@ public class AnaliseLexica {
                     if(cadeias[j].length()>0){
                         //pegar o index da cadeia na linha
                         int posCadeia = linhas[i].indexOf(cadeias[j]);
-
+                           System.out.println(""+cadeias[j]);
                         token=tab.descobrirToken(cadeias[j]);
                         if(token==null){
                            List<Token> novos=new ArrayList<>();

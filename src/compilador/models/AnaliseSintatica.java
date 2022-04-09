@@ -708,7 +708,8 @@ public class AnaliseSintatica {
         return false;
     }
     public boolean TipoVariavel(String token) {
-        if(token.equals("t_tipo_int") || token.equals("t_tipo_float") || token.equals("t_tipo_string")) {
+        if(token.equals("t_tipo_int") || token.equals("t_tipo_float") || token.equals("t_tipo_string")
+        || token.equals("t_tipo_cientifico")) {
             return true;
         }
         return false;
