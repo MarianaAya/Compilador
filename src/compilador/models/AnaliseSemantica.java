@@ -54,7 +54,7 @@ public class AnaliseSemantica {
                     Singleton.addSimbolos(new Simbolo(token.getToken(),token.getCadeia(),tipo,"undefined",token.getLinha()));
                 }
                 else {
-                    Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : variavel "+token.getCadeia()+" já foi declarada");
+                    Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : variavel "+token.getCadeia()+" já foi declarada",token.getLinha());
                 }
                 proxToken();
             }
@@ -67,11 +67,28 @@ public class AnaliseSemantica {
                 System.out.println("67 "+token.getCadeia());
                 int pos = Singleton.getPosSimbolo(token_identificador.getCadeia());
                 if(pos == -1) {
-                    Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : "+token_identificador.getCadeia()+" não foi declarada");
+                    Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : "+token_identificador.getCadeia()+" não foi declarada",token.getLinha());
                 }
                 else {
-                    System.out.println("73 "+lista.get(pos).getCadeia());
-                    Singleton.getSimbolos().get(pos).setValor(token.getCadeia());
+                    Simbolo simbolo =  Singleton.getSimbolos().get(pos);
+                    if(simbolo.getTipo().equals("string")) { //se a variavel for do tipo strinf
+                        if(token.getToken().equals("t_string")) {
+                            Singleton.getSimbolos().get(pos).setValor(token.getCadeia());
+                        }
+                        else {
+                            Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : "+token_identificador.getCadeia()+" não pode receber números",token.getLinha());
+                        }
+                    }
+                    else {
+                        if(token.getToken().equals("t_string")) {
+                            Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : "+token_identificador.getCadeia()+" não pode receber string",token.getLinha());
+                            
+                        }
+                        else {
+                            Singleton.getSimbolos().get(pos).setValor(token.getCadeia());
+                        }
+                    }
+                    
                 }
                 proxToken();
                 
