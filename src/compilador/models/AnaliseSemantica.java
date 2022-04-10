@@ -84,7 +84,7 @@ public class AnaliseSemantica {
                             
                         }
                         else { //é quando a variavel é um número, sendo assim pode haver uma conta
-                            double resultado = Operacao();
+                            String resultado = Operacao();
                             Singleton.getSimbolos().get(pos).setValor(""+resultado);
                         }
                     }
@@ -125,7 +125,7 @@ public class AnaliseSemantica {
 
                 }
                 else { //é quando a variavel é um número, sendo assim pode haver uma conta
-                    double resultado = Operacao();
+                    String resultado = Operacao();
                     Singleton.getSimbolos().get(pos).setValor(""+resultado);
                 }
             }
@@ -133,14 +133,28 @@ public class AnaliseSemantica {
     }
     public void If() {
         proxToken();
-        double primeiro = Operacao();
+        String primeiro = Operacao();
         Token sinalComparacao = null;
         if(SinalComparacao(lista.get(pos).getToken())) {
             sinalComparacao = lista.get(pos);
             proxToken();
             
-            double segundo = Operacao();
-            boolean resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia());
+            String segundo = Operacao();
+            boolean resultado;
+            System.out.println("144 "+primeiro);
+            if(primeiro.equals("NAN") || segundo.equals("NAN")) {
+                
+            }
+            else {
+                if(!primeiro.isEmpty() && !segundo.isEmpty()) {
+                    if(primeiro.charAt(0) == 34){
+                       resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"string");
+                    }
+                    else {
+                        resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"numero");
+                    }
+                }
+            }
             
             while(SinalLogica(lista.get(pos).getToken())) {
                 pos++;
@@ -148,7 +162,20 @@ public class AnaliseSemantica {
                 sinalComparacao = lista.get(pos);
                 pos++;
                 segundo = Operacao();
-                resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia());
+                if(primeiro.equals("NAN") || segundo.equals("NAN")) {
+                
+                }
+                else {
+                    if(!primeiro.isEmpty() && !segundo.isEmpty()) {
+                        if(primeiro.charAt(0) == 34){
+                           resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"string");
+                        }
+                        else {
+                            resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"numero");
+                        }
+                    }
+                }
+               
             }
     
   
@@ -172,14 +199,27 @@ public class AnaliseSemantica {
         proxToken();
         verificarIdentificador();
         proxToken();
-        double primeiro = Operacao();
+        String primeiro = Operacao();
         Token sinalComparacao = null;
         if(SinalComparacao(lista.get(pos).getToken())) {
             sinalComparacao = lista.get(pos);
             proxToken();
             
-            double segundo = Operacao();
-            boolean resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia());
+            String segundo = Operacao();
+            boolean resultado;
+            if(primeiro.equals("NAN") || segundo.equals("NAN")) {
+                
+            }
+            else {
+                if(!primeiro.isEmpty() && !segundo.isEmpty()) {
+                    if(primeiro.charAt(0) == 34){
+                       resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"string");
+                    }
+                    else {
+                        resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"numero");
+                    }
+                }
+            }
         }
         proxToken();
 
@@ -198,8 +238,8 @@ public class AnaliseSemantica {
             pos++;
         }
     }
-    public double getValor(Token token) {
-        double valor = 0;
+    public String getValor(Token token) {
+        String valor = "";
         if(token.getToken().equals("t_identificador")) {
             int pos = Singleton.getPosSimbolo(token.getCadeia());
             if(pos == -1) {
@@ -210,12 +250,13 @@ public class AnaliseSemantica {
                    Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : "+token.getCadeia()+" não foi inicializada",token.getLinha());
                }
                else {
-                   valor = Double.parseDouble(Singleton.getSimbolos().get(pos).getValor());
+  
+                   valor = Singleton.getSimbolos().get(pos).getValor();
                }
             }
         }
         else {
-            valor = Double.parseDouble(token.getCadeia());
+            valor = token.getCadeia();
         }
         return valor;
     }
@@ -235,34 +276,79 @@ public class AnaliseSemantica {
         return resultado;
         
     }
-    public double Operacao() {
+    public String Operacao() {
+        boolean bwhile = false;
+        boolean erro = false;
         double resultado = 0;
-        double termo = 0;
+        String termo = "";
         String sinal="";
-        resultado = getValor(lista.get(pos));
+        String inicial = getValor(lista.get(pos));
+        if(inicial.length()>0 && inicial.charAt(0)== 34) {
+            termo = inicial;
+            erro=true;   
+        }
+        else {
+           
+            termo = inicial;
+            if(termo.length()>0)
+                resultado = Double.parseDouble(termo);
+        }
         pos++;
         while(pos<lista.size() && (SinalOperacao(lista.get(pos).getToken()) || Termo(lista.get(pos).getToken()))) {
+            bwhile=true;
             if(Termo(lista.get(pos).getToken())) {
                 termo = getValor(lista.get(pos));
-                resultado = Conta(resultado,termo,sinal);
+                if(termo.length()>0 && termo.charAt(0)==34) {
+                    erro=true;
+                    Singleton.addErro("Erro semantico na linha "+lista.get(pos).getLinha()+" : não é possivel fazer operações com string",lista.get(pos).getLinha());
+                }
+                else {
+                    resultado = Conta(resultado,Double.parseDouble(termo),sinal);
+                    termo = ""+resultado;
+                }
             }
             if(SinalOperacao(lista.get(pos).getToken())) {
                 sinal = lista.get(pos).getCadeia();
             }
             pos++;
         }
-        return resultado;
+        if(erro)
+            return ""+resultado;
+        else {
+            if(bwhile && erro) {
+                return "NAN";
+            }
+            else{
+                    
+                return termo;
+            }
+            
+        }
+            
     }
     public void While() {
         proxToken();
-        double primeiro = Operacao();
+        boolean resultado;
+        String primeiro = Operacao();
         Token sinalComparacao = null;
         if(SinalComparacao(lista.get(pos).getToken())) {
             sinalComparacao = lista.get(pos);
             proxToken();
             
-            double segundo = Operacao();
-            boolean resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia());
+            String segundo = Operacao();
+            if(primeiro.equals("NAN") || segundo.equals("NAN")) {
+                
+            }
+            else {
+                if(!primeiro.isEmpty() && !segundo.isEmpty()){
+                    if(primeiro.length()>0 && primeiro.charAt(0) == 34){
+                       resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"string");
+                    }
+                    else {
+                        resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"numero");
+                    }
+                }
+            }
             
             while(SinalLogica(lista.get(pos).getToken())) {
                 pos++;
@@ -270,7 +356,19 @@ public class AnaliseSemantica {
                 sinalComparacao = lista.get(pos);
                 pos++;
                 segundo = Operacao();
-                resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia());
+                if(primeiro.equals("NAN") || segundo.equals("NAN")) {
+                
+                }
+                else {
+                    if(!primeiro.isEmpty() && !segundo.isEmpty()){
+                        if(primeiro.length()>0 && primeiro.charAt(0) == 34){
+                           resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"string");
+                        }
+                        else {
+                            resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"numero");
+                        }
+                    }
+                }
             }
     
 
@@ -282,30 +380,35 @@ public class AnaliseSemantica {
         
     }
     
-    public boolean Comparacao(double primeiro, double segundo, String sinal) {
+    public boolean Comparacao(String primeiro, String segundo, String sinal, String tipo) {
         boolean flag=false;
-        switch(sinal) {
-            case ">": if(primeiro>segundo)
-                        flag = true;
-                break;
-            case "<": if(primeiro<=segundo)
-                        flag = true;
-                break;
-            case ">=": if(primeiro>=segundo)
-                        flag = true;
-                break;
-            case "<=": if(primeiro<=segundo)
-                        flag = true;
-                break;
-            case "==": if(primeiro==segundo)
-                        flag = true;
-                break;
-            case "!=": if(primeiro!=segundo)
-                        flag = true;
-                break;
-               
+        if(tipo.equals("string"))
+        {
+            flag=true;
         }
-        
+        else {
+            switch(sinal) {
+                case ">": if(Double.parseDouble(primeiro)>Double.parseDouble(segundo))
+                            flag = true;
+                    break;
+                case "<": if(Double.parseDouble(primeiro)<=Double.parseDouble(segundo))
+                            flag = true;
+                    break;
+                case ">=": if(Double.parseDouble(primeiro)>=Double.parseDouble(segundo))
+                            flag = true;
+                    break;
+                case "<=": if(Double.parseDouble(primeiro)<=Double.parseDouble(segundo))
+                            flag = true;
+                    break;
+                case "==": if(Double.parseDouble(primeiro)==Double.parseDouble(segundo))
+                            flag = true;
+                    break;
+                case "!=": if(Double.parseDouble(primeiro)!=Double.parseDouble(segundo))
+                            flag = true;
+                    break;
+
+            }
+        }
         return flag;
     }
     public boolean TipoVariavel(String token) {
