@@ -28,6 +28,7 @@ public class AnaliseSemantica {
         }
     }
     public void analisar() {
+        System.out.println("iniciei semantica");
         lista = Singleton.getTokensResultado();
         proxToken();
         analisarComandos();
@@ -125,6 +126,7 @@ public class AnaliseSemantica {
 
                 }
                 else { //é quando a variavel é um número, sendo assim pode haver uma conta
+                    System.out.println("129 entrei");
                     String resultado = Operacao();
                     Singleton.getSimbolos().get(pos).setValor(""+resultado);
                 }
@@ -239,16 +241,21 @@ public class AnaliseSemantica {
                     }
             }
         }
+
         proxToken();
 
         verificarIdentificador();
-        if(Singleton.getErros().size()>0) {
-            proxToken();
-            proxToken();
 
-            analisarComandos();
+        while(pos<lista.size() && !lista.get(pos).getToken().equals("t_fecha_parenteses")) {
             pos++;
         }
+   
+        proxToken();
+        proxToken();
+        //System.out.println("254 "+lista.get(pos).getCadeia());
+        analisarComandos();
+        pos++;
+        
         
     }
     public void pularAteFechaChaves() {
