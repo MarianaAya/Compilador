@@ -169,11 +169,19 @@ public class AnaliseSemantica {
         if(SinalComparacao(lista.get(pos).getToken())) {
             sinalComparacao = lista.get(pos);
             proxToken();
-            //analisar primeiro termo
             
-            //analisar segundo termo
             double segundo = Operacao();
             boolean resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia());
+            
+            while(SinalLogica(lista.get(pos).getToken())) {
+                pos++;
+                primeiro = Operacao();
+                sinalComparacao = lista.get(pos);
+                pos++;
+                segundo = Operacao();
+                resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia());
+            }
+    
             if(resultado) {
     
                 proxToken();
@@ -247,6 +255,11 @@ public class AnaliseSemantica {
         if(token.equals("t_identificador") || token.equals("t_numero_int") || token.equals("t_numero_float") || token.equals("t_numero_cientifico")){
             return true;
         }
+        return false;
+    }
+    public boolean SinalLogica(String token) {
+        if(token.equals("t_e") || token.equals("t_ou"))
+            return true;
         return false;
     }
 }
