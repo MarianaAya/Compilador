@@ -116,7 +116,7 @@ public class AnaliseSemantica {
             }
             else {
                if(Singleton.getSimbolos().get(pos).getValor().equals("undefined")){
-                   Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : "+token.getCadeia()+" não foi inicializads",token.getLinha());
+                   Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : "+token.getCadeia()+" não foi inicializada",token.getLinha());
                }
                else {
                    valor = Double.parseDouble(Singleton.getSimbolos().get(pos).getValor());
@@ -164,23 +164,20 @@ public class AnaliseSemantica {
     }
     public void While() {
         proxToken();
-        Token primeiroTermo = lista.get(pos);
-        Token segundoTermo = null;
+        double primeiro = Operacao();
         Token sinalComparacao = null;
-        proxToken();
         if(SinalComparacao(lista.get(pos).getToken())) {
             sinalComparacao = lista.get(pos);
             proxToken();
-            segundoTermo = lista.get(pos);
-            proxToken();
             //analisar primeiro termo
-            double primeiro = Double.parseDouble(primeiroTermo.getCadeia());
+            
             //analisar segundo termo
-            double segundo = Double.parseDouble(segundoTermo.getCadeia());
-            
+            double segundo = Operacao();
             boolean resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia());
-            
             if(resultado) {
+    
+                proxToken();
+                System.out.println("184 "+lista.get(pos).getCadeia());
                 analisarComandos();
             }
             else {
