@@ -152,7 +152,7 @@ public class AnaliseSintatica {
                 pos++;
                 if(pos<lista.size() && (Numero(lista.get(pos).getToken()) || lista.get(pos).getToken().equals("t_string") 
                          || lista.get(pos).getToken().equals("t_identificador") )){
-                    
+      
                     if(Numero(lista.get(pos).getToken()) || lista.get(pos).getToken().equals("t_identificador")) {
                         pos++;
                         if(pos<lista.size()) {
@@ -174,11 +174,13 @@ public class AnaliseSintatica {
                     }
                     else {
                         pos++;
-                        if(!(pos<lista.size() && lista.get(pos).getToken().equals("t_pontovirgula"))) {
+                        if(!(pos<lista.size() && lista.get(pos).getToken().equals("t_pontovirgula")) && !flagFor) {
                             Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": era esperado ;",lista.get(pos-1).getLinha(),pos-1);
                         }
-                        else
-                            pos++;
+                        else{
+                            if(!flagFor)
+                                pos++;
+                        }
                     }
                     
 
@@ -276,7 +278,7 @@ public class AnaliseSintatica {
                         
                 }
                 else {
-                    
+                    System.out.println("279 for "+lista.get(pos).getToken());
                     Singleton.addErro("Erro sintático na linha "+lista.get(pos-1).getLinha()+": erro no comando FOR, era esperado , (primeiro)",lista.get(pos-1).getLinha(),pos-1);
                     continuarFimSentenca(lista);
                 }

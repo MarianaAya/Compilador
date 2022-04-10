@@ -34,7 +34,7 @@ public class AnaliseSemantica {
         
     }
     public void analisarComandos() {
-        while(pos<lista.size() && !lista.get(pos).getToken().equals("t_finish") && Singleton.getErros().size()==0) {
+        while(pos<lista.size() && !lista.get(pos).getToken().equals("t_finish") ) {
             if(lista.get(pos).getToken().equals("t_while")) {
                 While();
             }
@@ -47,6 +47,7 @@ public class AnaliseSemantica {
 
             if(TipoVariavel(lista.get(pos).getToken())) {
                 String tipo = definirTipoVariavel(lista.get(pos).getToken());
+                System.out.println("50 "+lista.get(pos).getCadeia());
                 pos++;
                 Token token = lista.get(pos);
  
@@ -276,6 +277,7 @@ public class AnaliseSemantica {
             }
     
             if(resultado) {
+                
                 proxToken();
                 proxToken();
                 analisarComandos();
