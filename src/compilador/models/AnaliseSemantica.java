@@ -47,7 +47,7 @@ public class AnaliseSemantica {
 
             if(TipoVariavel(lista.get(pos).getToken())) {
                 String tipo = definirTipoVariavel(lista.get(pos).getToken());
-                System.out.println("50 "+lista.get(pos).getCadeia());
+
                 pos++;
                 Token token = lista.get(pos);
  
@@ -151,14 +151,11 @@ public class AnaliseSemantica {
                 resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia());
             }
     
-            if(resultado) {
-                proxToken();
-                proxToken();
-                analisarComandos();
-            }
-            else {
-                pularAteFechaChaves();
-            }
+  
+            proxToken();
+            proxToken();
+            analisarComandos();
+
         }
  
         while(lista.get(pos).getToken().equals("t_fecha_chaves")) {
@@ -197,7 +194,7 @@ public class AnaliseSemantica {
         
     }
     public void pularAteFechaChaves() {
-        while(pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves")) {
+        while(pos<lista.size() && !lista.get(pos).getToken().equals("t_fecha_chaves")) {
             pos++;
         }
     }
@@ -276,16 +273,11 @@ public class AnaliseSemantica {
                 resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia());
             }
     
-            if(resultado) {
-                
-                proxToken();
-                proxToken();
-                analisarComandos();
-                pos++;
-            }
-            else {
-                pularAteFechaChaves();
-            }
+
+            proxToken();
+            proxToken();
+            analisarComandos();
+            pos++;
         }
         
     }
