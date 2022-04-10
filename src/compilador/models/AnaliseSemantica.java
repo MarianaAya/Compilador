@@ -34,15 +34,15 @@ public class AnaliseSemantica {
         
     }
     public void analisarComandos() {
-        while(pos<lista.size() && !lista.get(pos).getToken().equals("t_finish")) {
+        while(pos<lista.size() && !lista.get(pos).getToken().equals("t_finish") && Singleton.getErros().size()==0) {
             if(lista.get(pos).getToken().equals("t_while")) {
                 While();
             }
             if(lista.get(pos).getToken().equals("t_for")) {
-
+                For();
             }
             if(lista.get(pos).getToken().equals("t_if")) {
-
+                If();
             }
 
             if(TipoVariavel(lista.get(pos).getToken())) {
@@ -63,7 +63,6 @@ public class AnaliseSemantica {
                 Token token_identificador = lista.get(pos);
                 proxToken();
                 Token token = lista.get(pos);
-                
                 int pos = Singleton.getPosSimbolo(token_identificador.getCadeia());
                 if(pos == -1) {
                     Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : "+token_identificador.getCadeia()+" não foi declarada",token.getLinha());
@@ -85,7 +84,6 @@ public class AnaliseSemantica {
                         }
                         else { //é quando a variavel é um número, sendo assim pode haver uma conta
                             double resultado = Operacao();
-                            System.out.println("88 resultado = "+resultado);
                             Singleton.getSimbolos().get(pos).setValor(""+resultado);
                         }
                     }
@@ -95,10 +93,105 @@ public class AnaliseSemantica {
                 
             }
             
-            if(lista.get(pos).getToken().equals("t_abre_chaves")) { //vou sair de uma estrutura
+            if(lista.get(pos).getToken().equals("t_fecha_chaves")) { //vou sair de uma estrutura
                 break;
             }
             
+        }
+        
+    }
+    public void verificarIdentificador() {
+        Token token_identificador = lista.get(pos);
+        proxToken();
+        Token token = lista.get(pos);
+        int pos = Singleton.getPosSimbolo(token_identificador.getCadeia());
+        if(pos == -1) {
+            Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : "+token_identificador.getCadeia()+" não foi declarada",token.getLinha());
+        }
+        else {
+            Simbolo simbolo =  Singleton.getSimbolos().get(pos);
+            if(simbolo.getTipo().equals("string")) { //se a variavel for do tipo strinf
+                if(token.getToken().equals("t_string")) {
+                    Singleton.getSimbolos().get(pos).setValor(token.getCadeia());
+                }
+                else {
+                    Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : "+token_identificador.getCadeia()+" não pode receber números",token.getLinha());
+                }
+            }
+            else {
+                if(token.getToken().equals("t_string")) {
+                    Singleton.addErro("Erro semantico na linha "+token.getLinha()+" : "+token_identificador.getCadeia()+" não pode receber string",token.getLinha());
+
+                }
+                else { //é quando a variavel é um número, sendo assim pode haver uma conta
+                    double resultado = Operacao();
+                    Singleton.getSimbolos().get(pos).setValor(""+resultado);
+                }
+            }
+        }
+    }
+    public void If() {
+        proxToken();
+        double primeiro = Operacao();
+        Token sinalComparacao = null;
+        if(SinalComparacao(lista.get(pos).getToken())) {
+            sinalComparacao = lista.get(pos);
+            proxToken();
+            
+            double segundo = Operacao();
+            boolean resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia());
+            
+            while(SinalLogica(lista.get(pos).getToken())) {
+                pos++;
+                primeiro = Operacao();
+                sinalComparacao = lista.get(pos);
+                pos++;
+                segundo = Operacao();
+                resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia());
+            }
+    
+            if(resultado) {
+                proxToken();
+                proxToken();
+                analisarComandos();
+            }
+            else {
+                pularAteFechaChaves();
+            }
+        }
+ 
+        while(lista.get(pos).getToken().equals("t_fecha_chaves")) {
+            pos++;
+        }
+        System.out.println("164 "+lista.get(pos).getCadeia());
+        if(lista.get(pos).getToken().equals("t_else")) {
+            pos++;
+            proxToken();
+            analisarComandos();
+        }
+    }
+    public void For() {
+        proxToken();
+        verificarIdentificador();
+        proxToken();
+        double primeiro = Operacao();
+        Token sinalComparacao = null;
+        if(SinalComparacao(lista.get(pos).getToken())) {
+            sinalComparacao = lista.get(pos);
+            proxToken();
+            
+            double segundo = Operacao();
+            boolean resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia());
+        }
+        proxToken();
+
+        verificarIdentificador();
+        if(Singleton.getErros().size()>0) {
+            proxToken();
+            proxToken();
+
+            analisarComandos();
+            pos++;
         }
         
     }
@@ -183,10 +276,10 @@ public class AnaliseSemantica {
             }
     
             if(resultado) {
-    
                 proxToken();
-                System.out.println("184 "+lista.get(pos).getCadeia());
+                proxToken();
                 analisarComandos();
+                pos++;
             }
             else {
                 pularAteFechaChaves();
