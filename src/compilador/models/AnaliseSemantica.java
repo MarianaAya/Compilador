@@ -146,14 +146,20 @@ public class AnaliseSemantica {
                 
             }
             else {
-                if(!primeiro.isEmpty() && !segundo.isEmpty()) {
-                    if(primeiro.charAt(0) == 34){
-                       resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"string");
+                if(!primeiro.isEmpty() && !segundo.isEmpty()){
+                        if((primeiro.charAt(0) == 34 && segundo.charAt(0)!=34) || (primeiro.charAt(0) != 34 && segundo.charAt(0)==34)){
+                            Singleton.addErro("Erro semantico na linha "+lista.get(pos).getLinha()+" : não é possivel fazer comparações com tipos diferentes",lista.get(pos).getLinha());
+                        }
+                        else {
+                            if(primeiro.charAt(0) == 34){
+                                resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"string");
+                            }
+                            else {
+                                resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"numero");
+                            }
+                        }
+
                     }
-                    else {
-                        resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"numero");
-                    }
-                }
             }
             
             while(SinalLogica(lista.get(pos).getToken())) {
@@ -166,13 +172,19 @@ public class AnaliseSemantica {
                 
                 }
                 else {
-                    if(!primeiro.isEmpty() && !segundo.isEmpty()) {
-                        if(primeiro.charAt(0) == 34){
-                           resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"string");
+                    if(!primeiro.isEmpty() && !segundo.isEmpty()){
+                        if((primeiro.charAt(0) == 34 && segundo.charAt(0)!=34) || (primeiro.charAt(0) != 34 && segundo.charAt(0)==34)){
+                            Singleton.addErro("Erro semantico na linha "+lista.get(pos).getLinha()+" : não é possivel fazer comparações com tipos diferentes",lista.get(pos).getLinha());
                         }
                         else {
-                            resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"numero");
+                            if(primeiro.charAt(0) == 34){
+                                resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"string");
+                            }
+                            else {
+                                resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"numero");
+                            }
                         }
+
                     }
                 }
                
@@ -211,14 +223,20 @@ public class AnaliseSemantica {
                 
             }
             else {
-                if(!primeiro.isEmpty() && !segundo.isEmpty()) {
-                    if(primeiro.charAt(0) == 34){
-                       resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"string");
+                if(!primeiro.isEmpty() && !segundo.isEmpty()){
+                        if((primeiro.charAt(0) == 34 && segundo.charAt(0)!=34) || (primeiro.charAt(0) != 34 && segundo.charAt(0)==34)){
+                            Singleton.addErro("Erro semantico na linha "+lista.get(pos).getLinha()+" : não é possivel fazer comparações com tipos diferentes",lista.get(pos).getLinha());
+                        }
+                        else {
+                            if(primeiro.charAt(0) == 34){
+                                resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"string");
+                            }
+                            else {
+                                resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"numero");
+                            }
+                        }
+
                     }
-                    else {
-                        resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"numero");
-                    }
-                }
             }
         }
         proxToken();
@@ -312,7 +330,7 @@ public class AnaliseSemantica {
             }
             pos++;
         }
-        if(erro)
+        if(!erro)
             return ""+resultado;
         else {
             if(bwhile && erro) {
@@ -341,12 +359,18 @@ public class AnaliseSemantica {
             }
             else {
                 if(!primeiro.isEmpty() && !segundo.isEmpty()){
-                    if(primeiro.length()>0 && primeiro.charAt(0) == 34){
-                       resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"string");
+                    if((primeiro.charAt(0) == 34 && segundo.charAt(0)!=34) || (primeiro.charAt(0) != 34 && segundo.charAt(0)==34)){
+                        Singleton.addErro("Erro semantico na linha "+lista.get(pos).getLinha()+" : não é possivel fazer comparações com tipos diferentes",lista.get(pos).getLinha());
                     }
                     else {
-                        resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"numero");
+                        if(primeiro.charAt(0) == 34){
+                            resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"string");
+                        }
+                        else {
+                            resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"numero");
+                        }
                     }
+                    
                 }
             }
             
@@ -361,12 +385,18 @@ public class AnaliseSemantica {
                 }
                 else {
                     if(!primeiro.isEmpty() && !segundo.isEmpty()){
-                        if(primeiro.length()>0 && primeiro.charAt(0) == 34){
-                           resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"string");
+                        if((primeiro.charAt(0) == 34 && segundo.charAt(0)!=34) || (primeiro.charAt(0) != 34 && segundo.charAt(0)==34)){
+                            Singleton.addErro("Erro semantico na linha "+lista.get(pos).getLinha()+" : não é possivel fazer comparações com tipos diferentes",lista.get(pos).getLinha());
                         }
                         else {
-                            resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"numero");
+                            if(primeiro.charAt(0) == 34){
+                                resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"string");
+                            }
+                            else {
+                                resultado = Comparacao(primeiro,segundo,sinalComparacao.getCadeia(),"numero");
+                            }
                         }
+
                     }
                 }
             }
