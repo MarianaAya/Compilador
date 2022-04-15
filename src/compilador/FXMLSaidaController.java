@@ -1,8 +1,10 @@
 
 package compilador;
 
+import compilador.models.GeracaoCodigoIntermediario;
 import compilador.models.Singleton;
 import compilador.models.Token;
+import compilador.models.Tripla;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -39,6 +41,10 @@ public class FXMLSaidaController implements Initializable {
 
         List<Token> resultado=Singleton.getTokensResultado();
         tvToken.setItems(FXCollections.observableArrayList(resultado));
+        
+ 
+        
+                
         
     }    
 

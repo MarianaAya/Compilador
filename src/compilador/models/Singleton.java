@@ -74,8 +74,19 @@ public class Singleton {
             return -1;
     }
 
-  
+    //Geracao codigo inetrmediario
+    private static List<Tripla> triplas=new ArrayList<>();
+     public static List<Tripla> getTriplas()
+    {
+        return triplas;
+    }
+    public static void addTripla(Tripla tripla){
+        triplas.add(tripla);
+    }
     
+    public static void removeAllTriplas(){
+        triplas.clear();
+    }
     private Singleton()
     {
         //impede a instacia da classe

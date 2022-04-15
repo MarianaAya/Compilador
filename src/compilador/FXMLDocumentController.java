@@ -5,9 +5,11 @@ import compilador.models.AnaliseLexica;
 import compilador.models.AnaliseSemantica;
 import compilador.models.AnaliseSintatica;
 import compilador.models.Erro;
+import compilador.models.GeracaoCodigoIntermediario;
 import compilador.models.Simbolo;
 import compilador.models.Singleton;
 import compilador.models.Token;
+import compilador.models.Tripla;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.net.URL;
@@ -105,6 +107,15 @@ public class FXMLDocumentController implements Initializable {
                             +simbolos.get(y).getCadeia()+" tipo = "+simbolos.get(y).getTipo()+" valor= "+simbolos.get(y).getValor());
                 }
                 
+                GeracaoCodigoIntermediario g = new GeracaoCodigoIntermediario();
+                g.gerar();
+                List<Tripla> triplas = Singleton.getTriplas();
+                for(int i=0;i<triplas.size();i++) {
+                    String texto = "Código: "+triplas.get(i).getCodigo()+"Operador: "+triplas.get(i).getOperador()+" Operando1: "+triplas.get(i).getOperando1()+
+                            "Operando2: "+triplas.get(i).getOperando2()+"\n";
+                    System.out.println(""+texto);
+                }
+                
                 if(erros.size()>0) {
                     lbErro.setText("");
                     for(int i=0;i<erros.size();i++) {
@@ -115,6 +126,8 @@ public class FXMLDocumentController implements Initializable {
                         }
                     }
                 }
+                    
+                
             }
             else {
                 lbErro.setText("");
@@ -128,7 +141,20 @@ public class FXMLDocumentController implements Initializable {
                 }
             }
             
-            try
+            
+        }
+        else {
+            
+            lbErro.setText("");
+            for(int i=0;i<erros.size();i++) {
+                lbErro.setText(lbErro.getText()+"\n"+erros.get(i).getMensagem());
+                if(erros.get(i).getLinha()>0 && erros.get(i).getLinha()-1<vBoxLabels.getChildren().size()) {
+                    label = (Label)vBoxLabels.getChildren().get(erros.get(i).getLinha()-1);
+                    label.setStyle("-fx-background-color:#ff9999");
+                }
+            }
+        }
+        try
             {
 
                 Stage stage = new Stage();
@@ -144,18 +170,6 @@ public class FXMLDocumentController implements Initializable {
             {
                 System.out.println(e);
             }
-        }
-        else {
-            
-            lbErro.setText("");
-            for(int i=0;i<erros.size();i++) {
-                lbErro.setText(lbErro.getText()+"\n"+erros.get(i).getMensagem());
-                if(erros.get(i).getLinha()>0 && erros.get(i).getLinha()-1<vBoxLabels.getChildren().size()) {
-                    label = (Label)vBoxLabels.getChildren().get(erros.get(i).getLinha()-1);
-                    label.setStyle("-fx-background-color:#ff9999");
-                }
-            }
-        }
         
     }
     private void correcaoLexica() {
