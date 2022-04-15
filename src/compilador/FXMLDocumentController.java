@@ -135,8 +135,8 @@ public class FXMLDocumentController implements Initializable {
                 Scene scene=new Scene(FXMLLoader.load(getClass().getResource("FXMLSaida.fxml")));
                 stage.setScene(scene);
                 stage.setTitle("Saída");
-                stage.initModality(Modality.APPLICATION_MODAL);
-                stage.showAndWait();
+                stage.initModality(Modality.WINDOW_MODAL);
+                stage.show();
 
 
             }
