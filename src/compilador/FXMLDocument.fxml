@@ -27,23 +27,49 @@
                   </items>
                 </Menu>
               </menus>
+               <padding>
+                  <Insets left="5.0" top="2.0" />
+               </padding>
             </MenuBar>
-            <HBox prefHeight="26.0" prefWidth="119.0" spacing="10.0">
+            <Button fx:id="btCompilar" mnemonicParsing="false" onAction="#evtCompilar" prefHeight="29.0" prefWidth="78.0" style="-fx-background-color: #cc0000; -fx-text-fill: #ffffff;" text="Compilar">
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+               <font>
+                  <Font size="13.0" />
+               </font></Button>
+            <HBox prefHeight="26.0" prefWidth="239.0" spacing="10.0">
                <children>
+                  <Label text="Tamnho da Fonte:">
+                     <HBox.margin>
+                        <Insets top="5.0" />
+                     </HBox.margin>
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
                   <Button mnemonicParsing="false" onAction="#evtAumentar" prefHeight="25.0" prefWidth="46.0" style="-fx-background-color: #ffe6e6; -fx-text-fill: #000000;" text="+">
                      <HBox.margin>
-                        <Insets left="10.0" />
+                        <Insets />
                      </HBox.margin>
+                     <font>
+                        <Font size="15.0" />
+                     </font>
                   </Button>
-                  <Button mnemonicParsing="false" onAction="#evtDiminuir" prefHeight="25.0" prefWidth="46.0" style="-fx-background-color: #ffe6e6; -fx-text-fill: #000000;" text="-" />
+                  <Button mnemonicParsing="false" onAction="#evtDiminuir" prefHeight="25.0" prefWidth="46.0" style="-fx-background-color: #ffe6e6; -fx-text-fill: #000000;" text="-">
+                     <font>
+                        <Font size="14.0" />
+                     </font></Button>
                </children>
+               <HBox.margin>
+                  <Insets left="50.0" />
+               </HBox.margin>
             </HBox>
-            <Button fx:id="btCompilar" mnemonicParsing="false" onAction="#evtCompilar" prefHeight="24.0" prefWidth="64.0" style="-fx-background-color: #cc0000; -fx-text-fill: #ffffff;" text="Compilar" />
          </children>
       </HBox>
    </top>
    <bottom>
-      <ScrollPane prefHeight="93.0" prefWidth="900.0" BorderPane.alignment="CENTER">
+      <ScrollPane prefHeight="117.0" prefWidth="900.0" BorderPane.alignment="CENTER">
          <content>
             <VBox>
                <children>
@@ -55,6 +81,9 @@
                         <Font size="14.0" />
                      </font></Label>
                </children>
+               <padding>
+                  <Insets right="10.0" />
+               </padding>
             </VBox>
          </content>
       </ScrollPane>
@@ -62,9 +91,9 @@
    <center>
       <VBox BorderPane.alignment="CENTER">
          <children>
-            <ScrollPane>
+            <ScrollPane prefWidth="878.0">
                <content>
-                  <HBox>
+                  <HBox prefWidth="886.0">
                      <children>
                         <VBox fx:id="vBoxLabels" prefWidth="44.0" style="-fx-background-color: #f2f2f2;">
                            <HBox.margin>
@@ -74,7 +103,7 @@
                               <Insets top="5.0" />
                            </padding>
                         </VBox>
-                        <TextArea fx:id="txCodigo" onKeyPressed="#evtKeyPress" prefHeight="423.0" prefWidth="854.0">
+                        <TextArea fx:id="txCodigo" onKeyPressed="#evtKeyPress" prefHeight="423.0" prefWidth="838.0">
                            <font>
                               <Font size="14.0" />
                            </font>
