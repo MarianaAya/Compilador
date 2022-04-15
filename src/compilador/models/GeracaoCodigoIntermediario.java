@@ -36,7 +36,7 @@ public class GeracaoCodigoIntermediario {
     public void criarTriplas() {
         Token token=null;
         while(posToken<tokens.size()) {
-            System.out.println("passei");
+            
             if(TipoVariavel(tokens.get(posToken).getToken())) {
                 token = tokens.get(posToken);
                 proxToken();
@@ -132,20 +132,19 @@ public class GeracaoCodigoIntermediario {
         
     }
     public void identificador() {
-        System.out.println("passei154");
+
         int i = posToken;
         int fim;
         List<Tripla> aux = new ArrayList<>();
-        while(i<tokens.size() && (Termo(tokens.get(i).getToken()) || tokens.get(posToken).getToken().equals("t_sinal_definicao") 
+        while(i<tokens.size() && (Termo(tokens.get(i).getToken()) || tokens.get(i).getToken().equals("t_sinal_definicao") 
                 || tokens.get(i).getToken().equals("t_string"))) {
-            System.out.println("no while");
             i++;
         }
         fim = i;
         i--;
         if(i - posToken == 2) { //x = 1 ou é palavra
-            System.out.println("passeifds");
-            Singleton.addTripla(new Tripla(pos,"=",tokens.get(i).getCadeia()));
+   
+            Singleton.addTripla(new Tripla(pos,"=", tokens.get(i-2).getCadeia(),tokens.get(i).getCadeia()));
             pos++;
         }
         else { //é uma expressao

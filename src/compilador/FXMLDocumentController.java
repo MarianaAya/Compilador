@@ -111,8 +111,8 @@ public class FXMLDocumentController implements Initializable {
                 g.gerar();
                 List<Tripla> triplas = Singleton.getTriplas();
                 for(int i=0;i<triplas.size();i++) {
-                    String texto = "Código: "+triplas.get(i).getCodigo()+"Operador: "+triplas.get(i).getOperador()+" Operando1: "+triplas.get(i).getOperando1()+
-                            "Operando2: "+triplas.get(i).getOperando2()+"\n";
+                    String texto = "Código: "+triplas.get(i).getCodigo()+ " Operador: "+triplas.get(i).getOperador()+" Operando1: "+triplas.get(i).getOperando1()+
+                            " Operando2: "+triplas.get(i).getOperando2()+"\n";
                     System.out.println(""+texto);
                 }
                 
