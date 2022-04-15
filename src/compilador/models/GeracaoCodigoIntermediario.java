@@ -10,7 +10,6 @@ public class GeracaoCodigoIntermediario {
     private int posToken = 0;
     public void gerar(){
         tokens = Singleton.getTokensResultado();
-        System.out.println("fui");
         criarTriplas();
     }
     public void proxToken() {
@@ -58,7 +57,8 @@ public class GeracaoCodigoIntermediario {
                 Else();
             }
             if(tokens.get(posToken).getToken().equals("t_go") ||
-               tokens.get(posToken).getToken().equals("t_finish")) {
+               tokens.get(posToken).getToken().equals("t_finish") ||
+                tokens.get(posToken).getToken().equals("t_fecha_chaves")) {
                 posToken++;
             }
 
@@ -120,8 +120,8 @@ public class GeracaoCodigoIntermediario {
     }
     public void If() {
         proxToken();
-        proxToken();
         logico();
+        System.out.println("sai do logico");
         int posAlt = pos;
         Singleton.addTripla(new Tripla(pos,"if",
                             ""+pos));
@@ -164,7 +164,6 @@ public class GeracaoCodigoIntermediario {
                 
             }
         }
-        System.out.println("fim: "+tokens.get(fim).getToken());
         posToken = fim;
         proxToken();
     }
