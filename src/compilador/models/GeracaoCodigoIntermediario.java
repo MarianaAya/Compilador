@@ -23,8 +23,6 @@ public class GeracaoCodigoIntermediario {
                 posToken++;
             if(tokens.get(posToken).getToken().equals("t_fecha_parenteses")) 
                 posToken++;
-            if(tokens.get(posToken).getToken().equals("t_fecha_chaves")) 
-                posToken++;
             if(tokens.get(posToken).getToken().equals("t_abre_chaves")) 
                 posToken++;
             
@@ -63,7 +61,12 @@ public class GeracaoCodigoIntermediario {
                                 if(tokens.get(posToken).getToken().equals("t_else")){
                                     For();
                                 }else {
-                                    proxToken();
+                                    if(tokens.get(posToken).getToken().equals("t_fecha_chaves")) {
+                                        break;
+                                    }
+                                    else {
+                                        posToken++;
+                                    }
                                 }
                          
                             }
@@ -132,7 +135,9 @@ public class GeracaoCodigoIntermediario {
         proxToken();
         criarTriplas();
         Singleton.getTriplas().add(new Tripla(pos,"goto",""+posWhile)); //retornar para o while
+        pos++;
         Singleton.getTriplas().get(posAlt).setOperando1(""+(pos)); //comandos depois do while
+        posToken++;
         
     }
     public void If() {
@@ -145,7 +150,10 @@ public class GeracaoCodigoIntermediario {
         pos++;
         proxToken();
         criarTriplas();
+        System.out.println("terminei "+pos);
         Singleton.getTriplas().get(posAlt).setOperando1(""+(pos)); //comandos depois do if
+        posToken++;
+       
         
     }
     public void identificador() {
