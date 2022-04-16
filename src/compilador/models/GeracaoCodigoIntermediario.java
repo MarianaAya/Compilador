@@ -9,6 +9,7 @@ public class GeracaoCodigoIntermediario {
     private int pos = 0;
     private int posToken = 0;
     public void gerar(){
+        System.out.println("Entrei na geracao");
         tokens = Singleton.getTokensResultado();
         criarTriplas();
     }
@@ -218,9 +219,19 @@ public class GeracaoCodigoIntermediario {
     public void identificador() {
         int i = posToken;
         int fim;
-        List<Tripla> aux = new ArrayList<>();
+        List<String> operacoes = new ArrayList<>();
+        List<String> variaveis = new ArrayList<>();
+        String primeiroTermo = tokens.get(i).getCadeia();
+        i++;
         while(i<tokens.size() && (Termo(tokens.get(i).getToken()) || tokens.get(i).getToken().equals("t_sinal_definicao") 
                 || tokens.get(i).getToken().equals("t_string") || SinalOperacao(tokens.get(i).getToken()))) {
+            if(Termo(tokens.get(i).getToken())) {
+                variaveis.add(tokens.get(i).getCadeia());
+                
+            }
+            if(SinalOperacao(tokens.get(i).getToken())) {
+                operacoes.add(tokens.get(i).getCadeia());
+            }
             i++;
         }
         fim = i;
@@ -231,30 +242,33 @@ public class GeracaoCodigoIntermediario {
             pos++;
         }
         else { //é uma expressao
-            String auxT = "";
-            String operacao  = "";
-            String operacaoInter = "";
-            boolean primeiraVez = true;
-            while(i>posToken ) {
-                auxT = tokens.get(i).getCadeia();
-                i--;
-                operacao = tokens.get(i).getCadeia();
-                i--;
-                if(primeiraVez) {
-                    Singleton.addTripla(new Tripla(pos,operacao,tokens.get(i).getCadeia(),auxT));
-                    pos++;
-                    primeiraVez = false;
+            int posAux = 0;
+            boolean prioridade = false;
+            for(int t = 0; t<variaveis.size();t++) {
+                System.out.println(""+variaveis.get(t));
+            }
+            while(operacoes.size()>0) {
+                posAux = 0;
+                prioridade = false;
+                while(posAux<operacoes.size() && !prioridade) {
+                    if(operacoes.get(posAux).equals("*") || operacoes.get(posAux).equals("/")) {
+                        prioridade = true;
+                    }
+                    else
+                        posAux++;
                 }
-                else {
-                    Singleton.addTripla(new Tripla(pos,operacao,
-                                                    tokens.get(i).getCadeia(),
-                                                    "("+(pos-1)+")"));
-                    pos++;
+                if(!prioridade) {
+                    posAux = 0;
                 }
-   
-  
+                Singleton.addTripla(new Tripla(pos,operacoes.get(posAux), variaveis.get(posAux), variaveis.get(posAux+1)));
+                pos++;
+                variaveis.set(posAux, "("+(pos-1)+")");
+                operacoes.remove(posAux);
+                variaveis.remove(posAux+1);
                 
             }
+            Singleton.addTripla(new Tripla(pos,"=", primeiroTermo, "("+(pos-1)+")"));
+            pos++;
         }
         posToken = fim;
         proxToken();
