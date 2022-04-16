@@ -114,6 +114,22 @@ public class GeracaoCodigoIntermediario {
         }
     }
     public void For() {
+        int compFor;
+        int goFor; //para onde deve ir se for false a comparação
+        proxToken();
+        identificador();
+        compFor = pos;
+        logico();
+        goFor = pos;
+        Singleton.addTripla(new Tripla(pos,"for",""+pos));
+        pos++;
+        criarTriplas();
+        identificador();
+        Singleton.addTripla(new Tripla(pos,"goto",""+compFor));
+        pos++;
+        
+        Singleton.getTriplas().get(goFor).setOperando1(""+pos);
+        posToken++;
         
     }
     public void Else() {
@@ -171,7 +187,7 @@ public class GeracaoCodigoIntermediario {
         int fim;
         List<Tripla> aux = new ArrayList<>();
         while(i<tokens.size() && (Termo(tokens.get(i).getToken()) || tokens.get(i).getToken().equals("t_sinal_definicao") 
-                || tokens.get(i).getToken().equals("t_string"))) {
+                || tokens.get(i).getToken().equals("t_string") || SinalOperacao(tokens.get(i).getToken()))) {
             i++;
         }
         fim = i;
@@ -185,20 +201,31 @@ public class GeracaoCodigoIntermediario {
             String auxT = "";
             String operacao  = "";
             String operacaoInter = "";
-            while(i>posToken) {
+            System.out.println("entrei expressao "+tokens.get(i).getCadeia());
+            boolean primeiraVez = true;
+            while(i>posToken ) {
                 auxT = tokens.get(i).getCadeia();
                 i--;
                 operacao = tokens.get(i).getCadeia();
                 i--;
-                if(operacao.equals("/") || operacao.equals("*"))
-                Singleton.addTripla(new Tripla(0,operacao,tokens.get(i).getCadeia(),auxT));
-                i--;
-                
-                
+                if(primeiraVez) {
+                    Singleton.addTripla(new Tripla(pos,operacao,tokens.get(i).getCadeia(),auxT));
+                    pos++;
+                    primeiraVez = false;
+                }
+                else {
+                    Singleton.addTripla(new Tripla(pos,operacao,
+                                                    tokens.get(i).getCadeia(),
+                                                    "("+(pos-1)+")"));
+                    pos++;
+                }
+   
+  
                 
             }
         }
         posToken = fim;
+        System.out.println("fim expressao "+tokens.get(posToken).getCadeia());
         proxToken();
     }
     
