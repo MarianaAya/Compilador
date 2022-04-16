@@ -85,10 +85,11 @@ public class GeracaoCodigoIntermediario {
                 Singleton.addTripla(new Tripla(pos,tokens.get(posToken).getCadeia(),tokens.get(posToken-1).getCadeia(),tokens.get(posToken+1).getCadeia()));
                 aux.add(pos);
                 pos++;
-                index++;
+                
             }
             if(SinalLogica(tokens.get(posToken).getToken())) {
                 auxLogico.add(tokens.get(posToken).getCadeia());
+                index++;
             }
             posToken++;
         }
@@ -98,13 +99,15 @@ public class GeracaoCodigoIntermediario {
             for(int i=0;i<auxLogico.size();i++) {
                 if(i == 0 ){
                     Singleton.addTripla(new Tripla(pos,auxLogico.get(i),
-                            "("+triplas.get(qtde-2*index-2).getCodigo()+")",
-                            "("+triplas.get(qtde-2*index-1).getCodigo()+")"));
+                            "("+triplas.get(qtde-2*(index-1)-2).getCodigo()+")",
+                            "("+triplas.get(qtde-2*(index-1)-1).getCodigo()+")"));
+                    pos++;
                 }
                 else {
                     Singleton.addTripla(new Tripla(pos,auxLogico.get(i),
                             "("+triplas.get(Singleton.getTriplas().size()-1).getCodigo()+")",
-                            "("+triplas.get(qtde-2*index-1).getCodigo()+")"));
+                            "("+triplas.get(qtde-2*(index-1)-1).getCodigo()+")"));
+                    pos++;
                 }
                 index--;
             }
@@ -123,7 +126,7 @@ public class GeracaoCodigoIntermediario {
         proxToken();
         logico();
         int posAlt = pos;
-        Singleton.addTripla(new Tripla(pos,"if",
+        Singleton.addTripla(new Tripla(pos,"while",
                             ""+pos));
         pos++;
         proxToken();
