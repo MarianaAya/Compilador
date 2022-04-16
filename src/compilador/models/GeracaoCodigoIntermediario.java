@@ -34,31 +34,33 @@ public class GeracaoCodigoIntermediario {
         Token token=null;
         while(posToken<tokens.size()) {
             
-            if(TipoVariavel(tokens.get(posToken).getToken())) {
+            if(posToken<tokens.size() && TipoVariavel(tokens.get(posToken).getToken())) {
                 token = tokens.get(posToken);
                 proxToken();
+                System.out.println("token declaracao = "+tokens.get(posToken).getCadeia());
                 Singleton.addTripla(new Tripla(pos,token.getToken(),tokens.get(posToken).getCadeia()));
+                System.out.println(""+Singleton.getTriplas().get(Singleton.getTriplas().size()-1).getOperando1());
                 pos++;
                 proxToken();
             }
             else {
-                if(tokens.get(posToken).getToken().equals("t_identificador")) {
+                if(posToken<tokens.size() &&  tokens.get(posToken).getToken().equals("t_identificador")) {
                     identificador();
                 }
                 else {
-                    if(tokens.get(posToken).getToken().equals("t_while")) {
+                    if(posToken<tokens.size() &&  tokens.get(posToken).getToken().equals("t_while")) {
                         While();
                     }
                     else {
-                        if(tokens.get(posToken).getToken().equals("t_if")) {
+                        if(posToken<tokens.size() &&  tokens.get(posToken).getToken().equals("t_if")) {
                             If();
                         }
                         else {
                            
-                            if(tokens.get(posToken).getToken().equals("t_else")){
+                            if(posToken<tokens.size() &&  tokens.get(posToken).getToken().equals("t_for")){
                                 For();
                             }else {
-                                if(tokens.get(posToken).getToken().equals("t_fecha_chaves")) {
+                                if(posToken<tokens.size() &&  tokens.get(posToken).getToken().equals("t_fecha_chaves")) {
                                     break;
                                 }
                                 else {
@@ -80,7 +82,7 @@ public class GeracaoCodigoIntermediario {
         List<Integer> aux = new ArrayList<>();
         List<String> auxLogico = new ArrayList<>();
         int index = 0;//index da lista aux
-        while(posToken<tokens.size() && !tokens.get(posToken).getCadeia().equals(")")) {
+        while(posToken<tokens.size() && !tokens.get(posToken).getCadeia().equals(")") && !tokens.get(posToken).getCadeia().equals(",")) {
             if(SinalComparacao(tokens.get(posToken).getToken())) {
                 Singleton.addTripla(new Tripla(pos,tokens.get(posToken).getCadeia(),tokens.get(posToken-1).getCadeia(),tokens.get(posToken+1).getCadeia()));
                 aux.add(pos);
@@ -116,19 +118,44 @@ public class GeracaoCodigoIntermediario {
     public void For() {
         int compFor;
         int goFor; //para onde deve ir se for false a comparação
+        List<Tripla> auxLista = new ArrayList<>();
         proxToken();
         identificador();
         compFor = pos;
+        proxToken();
         logico();
-        goFor = pos;
+        
         Singleton.addTripla(new Tripla(pos,"for",""+pos));
         pos++;
-        criarTriplas();
+        goFor = pos;
+        proxToken();
         identificador();
+        for(int index = pos-1; index>=goFor;index--) {
+           auxLista.add(Singleton.getTriplas().get(index));
+           Singleton.getTriplas().remove(Singleton.getTriplas().get(index));
+        }
+        pos=goFor;
+ 
+        criarTriplas();
+        for(int index = auxLista.size()-1;index>=0;index--) {
+            if(auxLista.get(index).getOperando1().charAt(0)=='(') {
+                int diferenca = pos - auxLista.get(index).getCodigo();
+                int cod = Integer.parseInt(auxLista.get(index).getOperando1().substring(1, auxLista.get(index).getOperando1().length()-1));
+                auxLista.get(index).setOperando1("("+(cod+diferenca)+")");   
+            }
+            if(auxLista.get(index).getOperando2().charAt(0)=='(') {
+                int diferenca = pos - auxLista.get(index).getCodigo();
+                int cod = Integer.parseInt(auxLista.get(index).getOperando2().substring(1, auxLista.get(index).getOperando2().length()-1));
+                auxLista.get(index).setOperando2("("+(cod+diferenca)+")");   
+            }
+            Singleton.addTripla(auxLista.get(index));
+            Singleton.getTriplas().get(Singleton.getTriplas().size()-1).setCodigo(pos);
+            pos++;
+        }
         Singleton.addTripla(new Tripla(pos,"goto",""+compFor));
         pos++;
         
-        Singleton.getTriplas().get(goFor).setOperando1(""+pos);
+        Singleton.getTriplas().get(goFor-1).setOperando1(""+pos);
         posToken++;
         
     }
@@ -156,7 +183,6 @@ public class GeracaoCodigoIntermediario {
     public void If() {
         proxToken();
         logico();
-        System.out.println("sai do logico");
         int posAlt = pos;
         Singleton.addTripla(new Tripla(pos,"if",
                             ""+pos));
@@ -166,13 +192,14 @@ public class GeracaoCodigoIntermediario {
         
         posToken++;
         if(tokens.get(posToken).getToken().equals("t_else")) {
-            System.out.println("entrei else");
             int inicioElse = pos;
             Else();
             posToken++;
             Singleton.getTriplas().get(posAlt).setOperando1(""+inicioElse); //comandos depois do if
         }
         else {
+            System.out.println("No ultimo pos : "+"operador: "+Singleton.getTriplas().get(posAlt-1).getOperador()
+                    +" operando1: "+Singleton.getTriplas().get(posAlt-1).getOperando1());
             Singleton.getTriplas().get(posAlt).setOperando1(""+(pos)); //comandos depois do if
         }
         
@@ -182,7 +209,6 @@ public class GeracaoCodigoIntermediario {
         
     }
     public void identificador() {
-
         int i = posToken;
         int fim;
         List<Tripla> aux = new ArrayList<>();
@@ -201,7 +227,6 @@ public class GeracaoCodigoIntermediario {
             String auxT = "";
             String operacao  = "";
             String operacaoInter = "";
-            System.out.println("entrei expressao "+tokens.get(i).getCadeia());
             boolean primeiraVez = true;
             while(i>posToken ) {
                 auxT = tokens.get(i).getCadeia();

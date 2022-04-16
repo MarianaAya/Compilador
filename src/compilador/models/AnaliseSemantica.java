@@ -36,17 +36,17 @@ public class AnaliseSemantica {
     }
     public void analisarComandos() {
         while(pos<lista.size() && !lista.get(pos).getToken().equals("t_finish") ) {
-            if(lista.get(pos).getToken().equals("t_while")) {
+            if(pos<lista.size() && lista.get(pos).getToken().equals("t_while")) {
                 While();
             }
-            if(lista.get(pos).getToken().equals("t_for")) {
+            if(pos<lista.size() && lista.get(pos).getToken().equals("t_for")) {
                 For();
             }
-            if(lista.get(pos).getToken().equals("t_if")) {
+            if(pos<lista.size() && lista.get(pos).getToken().equals("t_if")) {
                 If();
             }
 
-            if(TipoVariavel(lista.get(pos).getToken())) {
+            if(pos<lista.size() && TipoVariavel(lista.get(pos).getToken())) {
                 String tipo = definirTipoVariavel(lista.get(pos).getToken());
 
                 pos++;
@@ -61,7 +61,7 @@ public class AnaliseSemantica {
                 proxToken();
             }
             
-            if(lista.get(pos).getToken().equals("t_identificador")) {
+            if(pos<lista.size() && lista.get(pos).getToken().equals("t_identificador")) {
                 Token token_identificador = lista.get(pos);
                 proxToken();
                 Token token = lista.get(pos);
@@ -95,7 +95,7 @@ public class AnaliseSemantica {
                 
             }
             
-            if(lista.get(pos).getToken().equals("t_fecha_chaves")) { //vou sair de uma estrutura
+            if( pos<lista.size() && lista.get(pos).getToken().equals("t_fecha_chaves")) { //vou sair de uma estrutura
                 break;
             }
             
