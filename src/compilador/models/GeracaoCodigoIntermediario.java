@@ -54,22 +54,19 @@ public class GeracaoCodigoIntermediario {
                             If();
                         }
                         else {
-                            if(tokens.get(posToken).getToken().equals("t_else")) {
-                                Else();
-                            }
-                            else {
-                                if(tokens.get(posToken).getToken().equals("t_else")){
-                                    For();
-                                }else {
-                                    if(tokens.get(posToken).getToken().equals("t_fecha_chaves")) {
-                                        break;
-                                    }
-                                    else {
-                                        posToken++;
-                                    }
+                           
+                            if(tokens.get(posToken).getToken().equals("t_else")){
+                                For();
+                            }else {
+                                if(tokens.get(posToken).getToken().equals("t_fecha_chaves")) {
+                                    break;
                                 }
-                         
+                                else {
+                                    posToken++;
+                                }
                             }
+                         
+                            
                         }
                     }
                 }
@@ -120,7 +117,7 @@ public class GeracaoCodigoIntermediario {
         
     }
     public void Else() {
-        posToken++;
+        proxToken();
         criarTriplas();
     }
     public void While() {
@@ -150,9 +147,21 @@ public class GeracaoCodigoIntermediario {
         pos++;
         proxToken();
         criarTriplas();
-        System.out.println("terminei "+pos);
-        Singleton.getTriplas().get(posAlt).setOperando1(""+(pos)); //comandos depois do if
+        
         posToken++;
+        if(tokens.get(posToken).getToken().equals("t_else")) {
+            System.out.println("entrei else");
+            int inicioElse = pos;
+            Else();
+            posToken++;
+            Singleton.getTriplas().get(posAlt).setOperando1(""+inicioElse); //comandos depois do if
+        }
+        else {
+            Singleton.getTriplas().get(posAlt).setOperando1(""+(pos)); //comandos depois do if
+        }
+        
+      
+        
        
         
     }

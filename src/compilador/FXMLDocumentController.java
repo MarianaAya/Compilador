@@ -88,7 +88,7 @@ public class FXMLDocumentController implements Initializable {
         Singleton.removeAllResultadoToken();
         Singleton.removeAllErros();
         Singleton.removeAllSimbolos();
-        Singleton.removeAllSimbolos();
+        Singleton.removeAllTriplas();
         AnaliseLexica al=new AnaliseLexica();
         al.receberPrograma(txCodigo.getText());
         List<Erro> erros=Singleton.getErros();
