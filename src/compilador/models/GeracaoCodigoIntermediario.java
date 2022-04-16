@@ -184,27 +184,34 @@ public class GeracaoCodigoIntermediario {
         proxToken();
         logico();
         int posAlt = pos;
+        int fimElse = -1;
         Singleton.addTripla(new Tripla(pos,"if",
                             ""+pos));
         pos++;
         proxToken();
         criarTriplas();
         
+        int pularElse = pos;
+        //quando for true, não passar pelo else
+        Singleton.addTripla(new Tripla(pos,"goto",""+fimElse));
+        pos++;
+
         posToken++;
         if(tokens.get(posToken).getToken().equals("t_else")) {
             int inicioElse = pos;
             Else();
             posToken++;
-            Singleton.getTriplas().get(posAlt).setOperando1(""+inicioElse); //comandos depois do if
+            fimElse = pos;
+            Singleton.getTriplas().get(posAlt).setOperando1(""+inicioElse); //quando o if é falso vai para posAlt
         }
         else {
-            System.out.println("No ultimo pos : "+"operador: "+Singleton.getTriplas().get(posAlt-1).getOperador()
-                    +" operando1: "+Singleton.getTriplas().get(posAlt-1).getOperando1());
             Singleton.getTriplas().get(posAlt).setOperando1(""+(pos)); //comandos depois do if
         }
-        
+
       
-        
+        if(fimElse != -1) {
+            Singleton.getTriplas().get(pularElse).setOperando1(""+fimElse);
+        } 
        
         
     }
