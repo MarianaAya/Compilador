@@ -33,6 +33,15 @@ public class AnaliseSemantica {
         proxToken();
         analisarComandos();
         
+        List<Simbolo> simbolos = Singleton.getSimbolos();
+        for(int i=0;i<simbolos.size();i++) {
+            if(simbolos.get(i).getValor().equals("undefined")) {
+                Singleton.addErro("Erro semantico na linha "+simbolos.get(i).getLinha()
+                        +" : "+simbolos.get(i).getCadeia()+" não teve atribuição"
+                        , simbolos.get(i).getLinha());
+            }
+        }
+        
     }
     public void analisarComandos() {
         while(pos<lista.size() && !lista.get(pos).getToken().equals("t_finish") ) {

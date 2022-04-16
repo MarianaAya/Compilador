@@ -37,9 +37,7 @@ public class GeracaoCodigoIntermediario {
             if(posToken<tokens.size() && TipoVariavel(tokens.get(posToken).getToken())) {
                 token = tokens.get(posToken);
                 proxToken();
-                System.out.println("token declaracao = "+tokens.get(posToken).getCadeia());
                 Singleton.addTripla(new Tripla(pos,token.getToken(),tokens.get(posToken).getCadeia()));
-                System.out.println(""+Singleton.getTriplas().get(Singleton.getTriplas().size()-1).getOperando1());
                 pos++;
                 proxToken();
             }
@@ -101,8 +99,8 @@ public class GeracaoCodigoIntermediario {
             for(int i=0;i<auxLogico.size();i++) {
                 if(i == 0 ){
                     Singleton.addTripla(new Tripla(pos,auxLogico.get(i),
-                            "("+triplas.get(qtde-2*(index-1)-2).getCodigo()+")",
-                            "("+triplas.get(qtde-2*(index-1)-1).getCodigo()+")"));
+                            "("+triplas.get(qtde-2*(index-1)-1).getCodigo()+")",
+                            "("+triplas.get(qtde-2*(index-1)).getCodigo()+")"));
                     pos++;
                 }
                 else {
@@ -185,13 +183,12 @@ public class GeracaoCodigoIntermediario {
         logico();
         int posAlt = pos;
         int fimElse = -1;
-        Singleton.addTripla(new Tripla(pos,"if",
-                            ""+pos));
+        Singleton.addTripla(new Tripla(pos,"if",""+pos));
         pos++;
         proxToken();
         criarTriplas();
         
-        int pularElse = pos;
+        int pularElse = pos; //a posição onde acaba o else
         //quando for true, não passar pelo else
         Singleton.addTripla(new Tripla(pos,"goto",""+fimElse));
         pos++;
@@ -202,7 +199,7 @@ public class GeracaoCodigoIntermediario {
             Else();
             posToken++;
             fimElse = pos;
-            Singleton.getTriplas().get(posAlt).setOperando1(""+inicioElse); //quando o if é falso vai para posAlt
+            Singleton.getTriplas().get(posAlt).setOperando1(""+inicioElse); //quando o if é falso, vai para inicioElse 
         }
         else {
             Singleton.getTriplas().get(posAlt).setOperando1(""+(pos)); //comandos depois do if
@@ -212,6 +209,9 @@ public class GeracaoCodigoIntermediario {
         if(fimElse != -1) {
             Singleton.getTriplas().get(pularElse).setOperando1(""+fimElse);
         } 
+        else {
+            Singleton.getTriplas().get(pularElse).setOperando1(""+pos);
+        }
        
         
     }
@@ -257,7 +257,6 @@ public class GeracaoCodigoIntermediario {
             }
         }
         posToken = fim;
-        System.out.println("fim expressao "+tokens.get(posToken).getCadeia());
         proxToken();
     }
     
