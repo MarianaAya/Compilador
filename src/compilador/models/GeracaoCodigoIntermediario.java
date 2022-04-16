@@ -14,7 +14,7 @@ public class GeracaoCodigoIntermediario {
     }
     public void proxToken() {
         posToken++;
-        if(pos<tokens.size()) {
+        if(posToken<tokens.size()) {
             if(tokens.get(posToken).getToken().equals("t_pontovirgula")) 
                 posToken++;
             if(tokens.get(posToken).getToken().equals("t_virgula")) 
@@ -43,23 +43,34 @@ public class GeracaoCodigoIntermediario {
                 pos++;
                 proxToken();
             }
-            
-            if(tokens.get(posToken).getToken().equals("t_identificador")) {
-                identificador();
-            }
-            if(tokens.get(posToken).getToken().equals("t_while")) {
-                While();
-            }
-            if(tokens.get(posToken).getToken().equals("t_if")) {
-                If();
-            }
-            if(tokens.get(posToken).getToken().equals("t_else")) {
-                Else();
-            }
-            if(tokens.get(posToken).getToken().equals("t_go") ||
-               tokens.get(posToken).getToken().equals("t_finish") ||
-                tokens.get(posToken).getToken().equals("t_fecha_chaves")) {
-                posToken++;
+            else {
+                if(tokens.get(posToken).getToken().equals("t_identificador")) {
+                    identificador();
+                }
+                else {
+                    if(tokens.get(posToken).getToken().equals("t_while")) {
+                        While();
+                    }
+                    else {
+                        if(tokens.get(posToken).getToken().equals("t_if")) {
+                            If();
+                        }
+                        else {
+                            if(tokens.get(posToken).getToken().equals("t_else")) {
+                                Else();
+                            }
+                            else {
+                                if(tokens.get(posToken).getToken().equals("t_else")){
+                                    For();
+                                }else {
+                                    proxToken();
+                                }
+                         
+                            }
+                        }
+                    }
+                }
+                
             }
 
         }
@@ -98,6 +109,9 @@ public class GeracaoCodigoIntermediario {
                 index--;
             }
         }
+    }
+    public void For() {
+        
     }
     public void Else() {
         posToken++;

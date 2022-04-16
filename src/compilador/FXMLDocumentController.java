@@ -106,16 +106,7 @@ public class FXMLDocumentController implements Initializable {
                     System.out.println("token = "+simbolos.get(y).getToken()+" cadeia = "
                             +simbolos.get(y).getCadeia()+" tipo = "+simbolos.get(y).getTipo()+" valor= "+simbolos.get(y).getValor());
                 }
-                
-                GeracaoCodigoIntermediario g = new GeracaoCodigoIntermediario();
-                g.gerar();
-                List<Tripla> triplas = Singleton.getTriplas();
-                for(int i=0;i<triplas.size();i++) {
-                    String texto = "Código: "+triplas.get(i).getCodigo()+ " Operador: "+triplas.get(i).getOperador()+" Operando1: "+triplas.get(i).getOperando1()+
-                            " Operando2: "+triplas.get(i).getOperando2()+"\n";
-                    System.out.println(""+texto);
-                }
-                
+                  
                 if(erros.size()>0) {
                     lbErro.setText("");
                     for(int i=0;i<erros.size();i++) {
