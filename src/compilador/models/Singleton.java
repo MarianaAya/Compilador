@@ -102,12 +102,12 @@ public class Singleton {
     }
     
     //geração do código objeto
-    private static List<ComandoObjeto> comandos=new ArrayList<>();
-     public static List<ComandoObjeto> getComandos()
+    private static List<ComandoMaquina> comandos=new ArrayList<>();
+     public static List<ComandoMaquina> getComandos()
     {
         return comandos;
     }
-    public static void addComando(ComandoObjeto comando){
+    public static void addComando(ComandoMaquina comando){
         comandos.add(comando);
     }
     

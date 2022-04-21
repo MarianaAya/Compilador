@@ -4,8 +4,10 @@ package compilador;
 import compilador.models.AnaliseLexica;
 import compilador.models.AnaliseSemantica;
 import compilador.models.AnaliseSintatica;
+import compilador.models.ComandoMaquina;
 import compilador.models.Erro;
 import compilador.models.GeracaoCodigoIntermediario;
+import compilador.models.GeracaoCodigoObjeto;
 import compilador.models.GeracaoCodigoOtimizado;
 import compilador.models.Simbolo;
 import compilador.models.Singleton;
@@ -90,6 +92,7 @@ public class FXMLDocumentController implements Initializable {
         Singleton.removeAllErros();
         Singleton.removeAllSimbolos();
         Singleton.removeAllTriplas();
+        Singleton.removeAllComandos();
         AnaliseLexica al=new AnaliseLexica();
         al.receberPrograma(txCodigo.getText());
         List<Erro> erros=Singleton.getErros();
@@ -110,12 +113,14 @@ public class FXMLDocumentController implements Initializable {
                 }
                 GeracaoCodigoIntermediario g = new GeracaoCodigoIntermediario();
                 g.gerar();
+                
                 List<Tripla> triplas = Singleton.getTriplas();
+                /*
                 for(int i=0;i<triplas.size();i++) {
                     String texto = "Código: "+triplas.get(i).getCodigo()+ " Operador: "+triplas.get(i).getOperador()+" Operando1: "+triplas.get(i).getOperando1()+
                             " Operando2: "+triplas.get(i).getOperando2();
                     System.out.println(""+texto);
-                }  
+                }  */
                 System.out.println("******************************");
                 GeracaoCodigoOtimizado go = new GeracaoCodigoOtimizado();
                 go.otimizar();
@@ -125,7 +130,16 @@ public class FXMLDocumentController implements Initializable {
                             " Operando2: "+triplas.get(i).getOperando2();
                     System.out.println(""+texto);
                 } 
-                
+                System.out.println("***************************");
+                GeracaoCodigoObjeto gc = new GeracaoCodigoObjeto();
+                gc.gerar();
+                List<ComandoMaquina> listaComandos = Singleton.getComandos();
+                for(int i=0;i<listaComandos.size();i++) {
+                    System.out.println("Comando: "+listaComandos.get(i).getComando()+
+                            " Operando1: "+listaComandos.get(i).getOperando1()+
+                            " Operando2: "+listaComandos.get(i).getOperando2()+
+                            " Operando3: "+listaComandos.get(i).getOperando3());
+                }
                 
                 if(erros.size()>0) {
                     lbErro.setText("");
