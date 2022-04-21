@@ -337,8 +337,10 @@ public class AnaliseSemantica {
                     Singleton.addErro("Erro semantico na linha "+lista.get(pos).getLinha()+" : não é possivel fazer operações com string",lista.get(pos).getLinha());
                 }
                 else {
-                    resultado = Conta(resultado,Double.parseDouble(termo),sinal);
-                    termo = ""+resultado;
+                    if(!termo.isEmpty()) {
+                        resultado = Conta(resultado,Double.parseDouble(termo),sinal);
+                        termo = ""+resultado;
+                    }
                 }
             }
             if(SinalOperacao(lista.get(pos).getToken())) {

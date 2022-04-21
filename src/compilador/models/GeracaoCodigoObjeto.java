@@ -84,7 +84,7 @@ public class GeracaoCodigoObjeto {
                 
                 enderecos.add(new Endereco(""+enderecoAux,"("+lista.get(pos).getCodigo()+")"));
                 
-                Singleton.addComando(new ComandoMaquina("addi",reg1,reg2,"RD"));
+                Singleton.addComando(new ComandoMaquina("addi","RD",reg1,reg2));
                 Singleton.addComando(new ComandoMaquina("store","RD","["+enderecoAux+"]"));
           
                 enderecoAux--;
