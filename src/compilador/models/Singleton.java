@@ -100,6 +100,21 @@ public class Singleton {
     public static void removeAllTriplasOtimizadas(){
         triplasOtimizadas.clear();
     }
+    
+    //geração do código objeto
+    private static List<ComandoObjeto> comandos=new ArrayList<>();
+     public static List<ComandoObjeto> getComandos()
+    {
+        return comandos;
+    }
+    public static void addComando(ComandoObjeto comando){
+        comandos.add(comando);
+    }
+    
+    public static void removeAllComandos(){
+        comandos.clear();
+    }
+    
     private Singleton()
     {
         //impede a instacia da classe
