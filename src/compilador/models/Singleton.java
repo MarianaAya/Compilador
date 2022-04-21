@@ -87,6 +87,19 @@ public class Singleton {
     public static void removeAllTriplas(){
         triplas.clear();
     }
+    //geração do código otimizado
+    private static List<Tripla> triplasOtimizadas=new ArrayList<>();
+     public static List<Tripla> getTriplasOtimizadas()
+    {
+        return triplasOtimizadas;
+    }
+    public static void addTriplaOtimizada(Tripla tripla){
+        triplasOtimizadas.add(tripla);
+    }
+    
+    public static void removeAllTriplasOtimizadas(){
+        triplasOtimizadas.clear();
+    }
     private Singleton()
     {
         //impede a instacia da classe

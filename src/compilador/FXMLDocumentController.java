@@ -6,6 +6,7 @@ import compilador.models.AnaliseSemantica;
 import compilador.models.AnaliseSintatica;
 import compilador.models.Erro;
 import compilador.models.GeracaoCodigoIntermediario;
+import compilador.models.GeracaoCodigoOtimizado;
 import compilador.models.Simbolo;
 import compilador.models.Singleton;
 import compilador.models.Token;
@@ -112,9 +113,20 @@ public class FXMLDocumentController implements Initializable {
                 List<Tripla> triplas = Singleton.getTriplas();
                 for(int i=0;i<triplas.size();i++) {
                     String texto = "Código: "+triplas.get(i).getCodigo()+ " Operador: "+triplas.get(i).getOperador()+" Operando1: "+triplas.get(i).getOperando1()+
-                            " Operando2: "+triplas.get(i).getOperando2()+"\n";
+                            " Operando2: "+triplas.get(i).getOperando2();
                     System.out.println(""+texto);
                 }  
+                System.out.println("******************************");
+                GeracaoCodigoOtimizado go = new GeracaoCodigoOtimizado();
+                go.otimizar();
+                triplas = Singleton.getTriplasOtimizadas();
+                for(int i=0;i<triplas.size();i++) {
+                    String texto = "Código: "+triplas.get(i).getCodigo()+ " Operador: "+triplas.get(i).getOperador()+" Operando1: "+triplas.get(i).getOperando1()+
+                            " Operando2: "+triplas.get(i).getOperando2();
+                    System.out.println(""+texto);
+                } 
+                
+                
                 if(erros.size()>0) {
                     lbErro.setText("");
                     for(int i=0;i<erros.size();i++) {
