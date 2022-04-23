@@ -13,7 +13,7 @@ public class GeracaoCodigoObjeto {
     private int enderecoAux;
     private List<Endereco> enderecos;
     public void gerar() {
-        indexReg = 0;
+        indexReg = 1;
         lista = Singleton.getTriplasOtimizadas();
         registradores = new ArrayList<>();
         enderecoAux=255;
@@ -82,6 +82,14 @@ public class GeracaoCodigoObjeto {
                     }
                 }
                 
+                if(lista.get(pos).getOperador().equals("-")) {
+                    Singleton.addComando(new ComandoMaquina("load","RD",""+255));
+                    Singleton.addComando(new ComandoMaquina("xor",reg2,reg2,"RD"));
+                    Singleton.addComando(new ComandoMaquina("load","RC",""+1));
+                    Singleton.addComando(new ComandoMaquina("addi",reg2,reg2,"RC"));
+                
+                }
+                
                 enderecos.add(new Endereco(""+enderecoAux,"("+lista.get(pos).getCodigo()+")"));
                 
                 Singleton.addComando(new ComandoMaquina("addi","RD",reg1,reg2));
@@ -90,12 +98,23 @@ public class GeracaoCodigoObjeto {
                 enderecoAux--;
                 
             }
+            
+            if(isJMP(lista.get(pos).getOperador())) {
+                
+            }
             pos++;
         }
+        Singleton.addComando(new ComandoMaquina("halt"));
     }
     
     public boolean SinalOperacao(String sinal) {
         if(sinal.equals("+") || sinal.equals("-") || sinal.equals("*") || sinal.equals("/"))
+            return true;
+        return false;
+    }
+    
+    public boolean isJMP(String simbolo) {
+        if(simbolo.equals("for") || simbolo.equals("if") || simbolo.equals("while") || simbolo.equals("goto"))
             return true;
         return false;
     }
