@@ -155,6 +155,7 @@ public class GeracaoCodigoIntermediario {
         pos++;
         
         Singleton.getTriplas().get(goFor-1).setOperando1(""+pos);
+        Singleton.getTriplas().get(goFor-1).setOperando2(""+(goFor));
         posToken++;
         
     }
@@ -176,6 +177,7 @@ public class GeracaoCodigoIntermediario {
         Singleton.getTriplas().add(new Tripla(pos,"goto",""+posWhile)); //retornar para o while
         pos++;
         Singleton.getTriplas().get(posAlt).setOperando1(""+(pos)); //comandos depois do while
+        Singleton.getTriplas().get(posAlt).setOperando2(""+(posAlt+1)); //primeiro comando do while
         posToken++;
         
     }
@@ -200,10 +202,12 @@ public class GeracaoCodigoIntermediario {
             Else();
             posToken++;
             fimElse = pos;
-            Singleton.getTriplas().get(posAlt).setOperando1(""+inicioElse); //quando o if é falso, vai para inicioElse 
+            Singleton.getTriplas().get(posAlt).setOperando1(""+inicioElse); //quando o if é falso, vai para inicioElse
+            Singleton.getTriplas().get(posAlt).setOperando2(""+(posAlt+1));
         }
         else {
             Singleton.getTriplas().get(posAlt).setOperando1(""+(pos)); //comandos depois do if
+            Singleton.getTriplas().get(posAlt).setOperando2(""+(posAlt+1));
         }
 
       

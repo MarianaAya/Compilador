@@ -135,7 +135,9 @@ public class FXMLDocumentController implements Initializable {
                 gc.gerar();
                 List<ComandoMaquina> listaComandos = Singleton.getComandos();
                 for(int i=0;i<listaComandos.size();i++) {
-                    System.out.println(listaComandos.get(i).getComando()+
+                    System.out.println(
+                            listaComandos.get(i).getRotulo()+": "+
+                            " "+listaComandos.get(i).getComando()+
                             " "+listaComandos.get(i).getOperando1()+
                             " "+listaComandos.get(i).getOperando2()+
                             " "+listaComandos.get(i).getOperando3());
