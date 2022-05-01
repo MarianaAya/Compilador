@@ -124,14 +124,9 @@ public class GeracaoCodigoObjeto {
      
         //inicializando
         Singleton.addComando(new ComandoMaquina("","move","RC","RE"));
-        Singleton.addComando(new ComandoMaquina("","load","RD","-1"));
-        Singleton.addComando(new ComandoMaquina("","jmpEQ","RF=R0","multZero"+auxCodComando));//vejo se o contador é igual a zero
-        Singleton.addComando(new ComandoMaquina("","jmp","multNotZero"+auxCodComando));
-        Singleton.addComando(new ComandoMaquina("multZero"+auxCodComando,"load","RE","0"));
+        Singleton.addComando(new ComandoMaquina("","load","RD","-1"));     
         Singleton.addComando(new ComandoMaquina("","store","RE","["+enderecoAux+"]"));
-        Singleton.addComando(new ComandoMaquina("","jmp","a"+(lista.get(pos).getCodigo()+1)));
         
-        Singleton.addComando(new ComandoMaquina("multNotZero"+auxCodComando,"store","RE","["+enderecoAux+"]"));
         //iteração
         Singleton.addComando(new ComandoMaquina("mult"+auxCodComando,"addi","RF","RF","RD")); //estou decrementando o contador
         Singleton.addComando(new ComandoMaquina("","jmpEQ","RF=R0","a"+(lista.get(pos).getCodigo()+1)));//vejo se o contador é igual a zero
