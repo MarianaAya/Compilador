@@ -93,16 +93,17 @@ public class GeracaoCodigoObjeto {
         }
         else {
             
-            if(lista.get(pos).getOperando2().charAt(0)>=48 && lista.get(pos).getOperando2().charAt(0)<=57){//se for um número
+            if(lista.get(pos).getOperando1().charAt(0)>=48 && lista.get(pos).getOperando1().charAt(0)<=57){//se for um número
                Singleton.addComando(new ComandoMaquina("","load","RE",lista.get(pos).getOperando1()));
             }
             else {
+                System.out.println("entrei");
                 posRegistrador = getPosVariavel(lista.get(pos).getOperando1());
                 Singleton.addComando(new ComandoMaquina("","move","RE",registradores.get(posRegistrador).getRegistrador()));
             }
 
         }
-   
+
         //segundo termo
         if(lista.get(pos).getOperando2().charAt(0)=='(') {
             int posEndereco = getPosEndereco(lista.get(pos).getOperando2());
@@ -110,7 +111,7 @@ public class GeracaoCodigoObjeto {
 
         }
         else {
-            
+
             if(lista.get(pos).getOperando2().charAt(0)>=48 && lista.get(pos).getOperando2().charAt(0)<=57){//se for um número
                Singleton.addComando(new ComandoMaquina("","load","RF",lista.get(pos).getOperando2()));
             }
@@ -124,7 +125,13 @@ public class GeracaoCodigoObjeto {
         //inicializando
         Singleton.addComando(new ComandoMaquina("","move","RC","RE"));
         Singleton.addComando(new ComandoMaquina("","load","RD","-1"));
+        Singleton.addComando(new ComandoMaquina("","jmpEQ","RF=R0","multZero"+auxCodComando));//vejo se o contador é igual a zero
+        Singleton.addComando(new ComandoMaquina("","jmp","multNotZero"+auxCodComando));
+        Singleton.addComando(new ComandoMaquina("multZero"+auxCodComando,"load","RE","0"));
         Singleton.addComando(new ComandoMaquina("","store","RE","["+enderecoAux+"]"));
+        Singleton.addComando(new ComandoMaquina("","jmp","a"+(lista.get(pos).getCodigo()+1)));
+        
+        Singleton.addComando(new ComandoMaquina("multNotZero"+auxCodComando,"store","RE","["+enderecoAux+"]"));
         //iteração
         Singleton.addComando(new ComandoMaquina("mult"+auxCodComando,"addi","RF","RF","RD")); //estou decrementando o contador
         Singleton.addComando(new ComandoMaquina("","jmpEQ","RF=R0","a"+(lista.get(pos).getCodigo()+1)));//vejo se o contador é igual a zero
@@ -133,7 +140,7 @@ public class GeracaoCodigoObjeto {
         Singleton.addComando(new ComandoMaquina("","jmp","mult"+auxCodComando));
         
         enderecos.add(new Endereco(""+enderecoAux,"("+lista.get(pos).getCodigo()+")"));
-        enderecoAux++;
+        enderecoAux--;
         auxCodComando++;
       
     }
