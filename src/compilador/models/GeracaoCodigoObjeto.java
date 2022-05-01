@@ -226,13 +226,17 @@ public class GeracaoCodigoObjeto {
         int posRegistrador=0;
         String reg1 = "RF";
         String reg2 = "RE";
+        boolean rotulou=false;
+        String rotulo="";
         //Analisar o operando1
         if(lista.get(pos).getOperando1().charAt(0)=='(') { //se for (2)
+            rotulou=true;
            int posEndereco = getPosEndereco(lista.get(pos).getOperando1());
            Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"load","RF","["+enderecos.get(posEndereco).getEndereco()+"]"));
         }
         else {
             if(lista.get(pos).getOperando1().charAt(0)>=48 && lista.get(pos).getOperando1().charAt(0)<=57){ //se for um numero
+                rotulou=true;
                 Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"load","RF",lista.get(pos).getOperando1()));
             }
             else {//se for uma variavel, procuro o registrador
@@ -243,11 +247,15 @@ public class GeracaoCodigoObjeto {
         //analisar o operando2
         if(lista.get(pos).getOperando2().charAt(0)=='(') {//se for (2)
            int posEndereco = getPosEndereco(lista.get(pos).getOperando2());
-           Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"load","RE","["+enderecos.get(posEndereco).getEndereco()+"]"));
+           if(!rotulou)
+               rotulo= "a"+lista.get(pos).getCodigo();
+           Singleton.addComando(new ComandoMaquina(rotulo,"load","RE","["+enderecos.get(posEndereco).getEndereco()+"]"));
         }
         else {
             if(lista.get(pos).getOperando2().charAt(0)>=48 && lista.get(pos).getOperando2().charAt(0)<=57){ //se for um numero
-                Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"load","RE",lista.get(pos).getOperando2()));
+                if(!rotulou)
+                    rotulo= "a"+lista.get(pos).getCodigo();
+                Singleton.addComando(new ComandoMaquina(rotulo,"load","RE",lista.get(pos).getOperando2()));
             }
             else {//se for uma variavel, procuro o registrador
                 posRegistrador = getPosVariavel(lista.get(pos).getOperando2());
