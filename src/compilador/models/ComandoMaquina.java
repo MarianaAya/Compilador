@@ -22,6 +22,8 @@ public class ComandoMaquina {
         this.rotulo = rotulo;
         this.comando = comando;
         this.operando1 = operando1;
+        this.operando2 = "";
+        this.operando3 = "";
     }
 
     public ComandoMaquina(String rotulo, String comando, String operando1, String operando2) {
@@ -29,11 +31,15 @@ public class ComandoMaquina {
         this.comando = comando;
         this.operando1 = operando1;
         this.operando2 = operando2;
+        this.operando3 = "";
     }
     
     public ComandoMaquina(String rotulo, String comando) {
         this.rotulo = rotulo;
         this.comando = comando;
+        this.operando1 = "";
+        this.operando2 = "";
+        this.operando3 = "";
     }
 
     
@@ -78,6 +84,25 @@ public class ComandoMaquina {
 
     public void setOperando3(String operando3) {
         this.operando3 = operando3;
+    }
+
+    @Override
+    public String toString() {
+        String c="";
+        if(!rotulo.isEmpty())
+            c+=rotulo +" : ";
+        else {
+            c+="    ";
+        }
+        if(!comando.isEmpty())
+            c+=comando;
+        if(!operando1.isEmpty())
+            c+=" "+operando1;
+        if(!operando2.isEmpty())
+            c+=", "+operando2;
+        if(!operando3.isEmpty())
+            c+=", "+operando3;
+        return c;
     }
     
     

@@ -13,6 +13,7 @@ public class GeracaoCodigoObjeto {
     private int enderecoAux;
     private List<Endereco> enderecos;
     public void gerar() {
+        System.out.println("geracao do código objeto");
         indexReg = 1;
         lista = Singleton.getTriplasOtimizadas();
         registradores = new ArrayList<>();
@@ -79,7 +80,7 @@ public class GeracaoCodigoObjeto {
     }
     
     public void Multiplicacao(int pos) {
-        
+        boolean rotulou=false;
         int posRegistrador=0;
         int qtde = 0;
         String reg1="",reg2="";
@@ -88,18 +89,20 @@ public class GeracaoCodigoObjeto {
         //primeiro termo
         if(lista.get(pos).getOperando1().charAt(0)=='(') {
             int posEndereco = getPosEndereco(lista.get(pos).getOperando1());
-            Singleton.addComando(new ComandoMaquina("","load","RE","["+enderecos.get(posEndereco).getEndereco()+"]"));
-
+            Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"load","RE","["+enderecos.get(posEndereco).getEndereco()+"]"));
+            rotulou = true;
         }
         else {
             
             if(lista.get(pos).getOperando1().charAt(0)>=48 && lista.get(pos).getOperando1().charAt(0)<=57){//se for um número
-               Singleton.addComando(new ComandoMaquina("","load","RE",lista.get(pos).getOperando1()));
+               Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"load","RE",lista.get(pos).getOperando1()));
+               rotulou = true;
             }
             else {
-                System.out.println("entrei");
+
                 posRegistrador = getPosVariavel(lista.get(pos).getOperando1());
-                Singleton.addComando(new ComandoMaquina("","move","RE",registradores.get(posRegistrador).getRegistrador()));
+                Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"move","RE",registradores.get(posRegistrador).getRegistrador()));
+                rotulou = true;
             }
 
         }
@@ -143,30 +146,69 @@ public class GeracaoCodigoObjeto {
     public void Divisao(int pos) {
         int posRegistrador=0;
         int qtde = 0;
-        String reg1="",reg2="";
-      
+        String reg1="RE",reg2="RF";
+        boolean rotulou=false;
         //vou careegar os termos em outros dois registradores
         //primeiro termo
-        if(lista.get(pos).getOperando1().charAt(0)>=48 && lista.get(pos).getOperando1().charAt(0)<=57){//se for um número
-            Singleton.addComando(new ComandoMaquina("","load","RE",lista.get(pos).getOperando1()));
+        if(lista.get(pos).getOperando1().charAt(0)=='(') {
+            int posEndereco = getPosEndereco(lista.get(pos).getOperando1());
+            Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"load","RE","["+enderecos.get(posEndereco).getEndereco()+"]"));
+            rotulou = true;
         }
         else {
-            posRegistrador = getPosVariavel(lista.get(pos).getOperando1());
-            Singleton.addComando(new ComandoMaquina("","move","RE",registradores.get(posRegistrador).getRegistrador()));
+            
+            if(lista.get(pos).getOperando1().charAt(0)>=48 && lista.get(pos).getOperando1().charAt(0)<=57){//se for um número
+               Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"load","RE",lista.get(pos).getOperando1()));
+               rotulou = true;
+            }
+            else {
+                posRegistrador = getPosVariavel(lista.get(pos).getOperando1());
+                Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"move","RE",registradores.get(posRegistrador).getRegistrador()));
+                rotulou=true;
+            }
+
         }
+
         //segundo termo
-        if(lista.get(pos).getOperando2().charAt(0)>=48 && lista.get(pos).getOperando2().charAt(0)<=57){//se for um número
-            Singleton.addComando(new ComandoMaquina("","load","RF",lista.get(pos).getOperando2()));
+        if(lista.get(pos).getOperando2().charAt(0)=='(') {
+            int posEndereco = getPosEndereco(lista.get(pos).getOperando2());
+            Singleton.addComando(new ComandoMaquina("","load","RF","["+enderecos.get(posEndereco).getEndereco()+"]"));
+
         }
         else {
-            posRegistrador = getPosVariavel(lista.get(pos).getOperando2());
-            Singleton.addComando(new ComandoMaquina("","move","RF",registradores.get(posRegistrador).getRegistrador()));
+
+            if(lista.get(pos).getOperando2().charAt(0)>=48 && lista.get(pos).getOperando2().charAt(0)<=57){//se for um número
+               Singleton.addComando(new ComandoMaquina("","load","RF",lista.get(pos).getOperando2()));
+            }
+            else {
+                posRegistrador = getPosVariavel(lista.get(pos).getOperando2());
+                Singleton.addComando(new ComandoMaquina("","move","RF",registradores.get(posRegistrador).getRegistrador()));
+            }
+
         }
      
         //inicializando
-    
-    
-        enderecoAux++;
+        Singleton.addComando(new ComandoMaquina("","load","RD","0")); //para contador 
+        Singleton.addComando(new ComandoMaquina("","load","R0",reg2)); //para conseguir fazer a comparação
+        //para tornar negativo
+        Singleton.addComando(new ComandoMaquina("","move","RB",reg2)); 
+        Singleton.addComando(new ComandoMaquina("","load","RC","255")); 
+        Singleton.addComando(new ComandoMaquina("","xor","RB","RB","RC"));
+        Singleton.addComando(new ComandoMaquina("","load","RC",""+1));
+        Singleton.addComando(new ComandoMaquina("","addi","RB","RB","RC")); //RB tem o número negativo
+     
+        //iteração
+        Singleton.addComando(new ComandoMaquina("comp"+auxCodComando,"jmpEQ",reg1+"==R0","div"+auxCodComando)); 
+        Singleton.addComando(new ComandoMaquina("","jmpLE",reg1+"<=R0","a"+lista.get(pos+1).getCodigo()));//não tem como dividir
+        
+        Singleton.addComando(new ComandoMaquina("div"+auxCodComando,"addi","RE","RE","RB"));
+        Singleton.addComando(new ComandoMaquina("","addi","RD","RD","RC"));
+        
+        
+        Singleton.addComando(new ComandoMaquina("","jmp","comp"+auxCodComando)); //voltar para a comparacao
+        Singleton.addComando(new ComandoMaquina("","store","RD","["+enderecoAux+"]"));
+        enderecos.add(new Endereco(""+enderecoAux,"("+lista.get(pos).getCodigo()+")"));
+        enderecoAux--;
         auxCodComando++;
     
     }
@@ -232,7 +274,7 @@ public class GeracaoCodigoObjeto {
         String rotulo="";
         //Analisar o operando1
         if(lista.get(pos).getOperando1().charAt(0)=='(') { //se for (2)
-            rotulou=true;
+           rotulou=true;
            int posEndereco = getPosEndereco(lista.get(pos).getOperando1());
            Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"load","RF","["+enderecos.get(posEndereco).getEndereco()+"]"));
         }
@@ -267,18 +309,26 @@ public class GeracaoCodigoObjeto {
         }
 
         if(lista.get(pos).getOperador().equals("-")) {
+            
             Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"load","RD",""+255));
-            Singleton.addComando(new ComandoMaquina("","xor",reg2,reg2,"RD"));
+            Singleton.addComando(new ComandoMaquina("","move","RC",reg2));
+            Singleton.addComando(new ComandoMaquina("","xor","RC","RC","RD"));
             Singleton.addComando(new ComandoMaquina("","load","RD",""+1));
-            Singleton.addComando(new ComandoMaquina("","addi",reg2,reg2,"RD"));
+            Singleton.addComando(new ComandoMaquina("","addi","RC","RC","RD"));
+            
+            enderecos.add(new Endereco(""+enderecoAux,"("+lista.get(pos).getCodigo()+")"));
+
+            Singleton.addComando(new ComandoMaquina("","addi","RD",reg1,"RC"));
+            Singleton.addComando(new ComandoMaquina("","store","RD","["+enderecoAux+"]"));
 
         }
+        else {
 
-        enderecos.add(new Endereco(""+enderecoAux,"("+lista.get(pos).getCodigo()+")"));
+            enderecos.add(new Endereco(""+enderecoAux,"("+lista.get(pos).getCodigo()+")"));
 
-        Singleton.addComando(new ComandoMaquina("","addi","RD",reg1,reg2));
-        Singleton.addComando(new ComandoMaquina("","store","RD","["+enderecoAux+"]"));
-
+            Singleton.addComando(new ComandoMaquina("","addi","RD",reg1,reg2));
+            Singleton.addComando(new ComandoMaquina("","store","RD","["+enderecoAux+"]"));
+        }
         enderecoAux--;
     }
     
