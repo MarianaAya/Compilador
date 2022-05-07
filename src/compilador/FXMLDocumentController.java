@@ -111,34 +111,7 @@ public class FXMLDocumentController implements Initializable {
                     System.out.println("token = "+simbolos.get(y).getToken()+" cadeia = "
                             +simbolos.get(y).getCadeia()+" tipo = "+simbolos.get(y).getTipo()+" valor= "+simbolos.get(y).getValor());
                 }
-                GeracaoCodigoIntermediario g = new GeracaoCodigoIntermediario();
-                g.gerar();
                 
-                List<Tripla> triplas = Singleton.getTriplas();
-                /*
-                for(int i=0;i<triplas.size();i++) {
-                    String texto = "Código: "+triplas.get(i).getCodigo()+ " Operador: "+triplas.get(i).getOperador()+" Operando1: "+triplas.get(i).getOperando1()+
-                            " Operando2: "+triplas.get(i).getOperando2();
-                    System.out.println(""+texto);
-                }  */
-                
-                System.out.println("******************************");
-                GeracaoCodigoOtimizado go = new GeracaoCodigoOtimizado();
-                go.otimizar();
-                triplas = Singleton.getTriplasOtimizadas();
-                for(int i=0;i<triplas.size();i++) {
-                    String texto = "Código: "+triplas.get(i).getCodigo()+ " Operador: "+triplas.get(i).getOperador()+" Operando1: "+triplas.get(i).getOperando1()+
-                            " Operando2: "+triplas.get(i).getOperando2();
-                    System.out.println(""+texto);
-                } 
-                System.out.println("***************************");
-                GeracaoCodigoObjeto gc = new GeracaoCodigoObjeto();
-                gc.gerar();
-                List<ComandoMaquina> listaComandos = Singleton.getComandos();
-                for(int i=0;i<listaComandos.size();i++) {
-                    System.out.println(
-                            listaComandos.get(i));
-                }
                 
                 if(erros.size()>0) {
                     lbErro.setText("");
@@ -148,6 +121,36 @@ public class FXMLDocumentController implements Initializable {
                             label = (Label)vBoxLabels.getChildren().get(erros.get(i).getLinha()-1);
                             label.setStyle("-fx-background-color:#ff9999");
                         }
+                    }
+                }
+                else {
+                    GeracaoCodigoIntermediario g = new GeracaoCodigoIntermediario();
+                    g.gerar();
+
+                    List<Tripla> triplas = Singleton.getTriplas();
+                    /*
+                    for(int i=0;i<triplas.size();i++) {
+                        String texto = "Código: "+triplas.get(i).getCodigo()+ " Operador: "+triplas.get(i).getOperador()+" Operando1: "+triplas.get(i).getOperando1()+
+                                " Operando2: "+triplas.get(i).getOperando2();
+                        System.out.println(""+texto);
+                    }  */
+
+                    System.out.println("******************************");
+                    GeracaoCodigoOtimizado go = new GeracaoCodigoOtimizado();
+                    go.otimizar();
+                    triplas = Singleton.getTriplasOtimizadas();
+                    for(int i=0;i<triplas.size();i++) {
+                        String texto = "Código: "+triplas.get(i).getCodigo()+ " Operador: "+triplas.get(i).getOperador()+" Operando1: "+triplas.get(i).getOperando1()+
+                                " Operando2: "+triplas.get(i).getOperando2();
+                        System.out.println(""+texto);
+                    } 
+                    System.out.println("***************************");
+                    GeracaoCodigoObjeto gc = new GeracaoCodigoObjeto();
+                    gc.gerar();
+                    List<ComandoMaquina> listaComandos = Singleton.getComandos();
+                    for(int i=0;i<listaComandos.size();i++) {
+                        System.out.println(
+                                listaComandos.get(i));
                     }
                 }
                     
