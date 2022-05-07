@@ -127,31 +127,13 @@ public class FXMLDocumentController implements Initializable {
                     GeracaoCodigoIntermediario g = new GeracaoCodigoIntermediario();
                     g.gerar();
 
-                    List<Tripla> triplas = Singleton.getTriplas();
-                    /*
-                    for(int i=0;i<triplas.size();i++) {
-                        String texto = "Código: "+triplas.get(i).getCodigo()+ " Operador: "+triplas.get(i).getOperador()+" Operando1: "+triplas.get(i).getOperando1()+
-                                " Operando2: "+triplas.get(i).getOperando2();
-                        System.out.println(""+texto);
-                    }  */
-
-                    System.out.println("******************************");
+                   
                     GeracaoCodigoOtimizado go = new GeracaoCodigoOtimizado();
                     go.otimizar();
-                    triplas = Singleton.getTriplasOtimizadas();
-                    for(int i=0;i<triplas.size();i++) {
-                        String texto = "Código: "+triplas.get(i).getCodigo()+ " Operador: "+triplas.get(i).getOperador()+" Operando1: "+triplas.get(i).getOperando1()+
-                                " Operando2: "+triplas.get(i).getOperando2();
-                        System.out.println(""+texto);
-                    } 
-                    System.out.println("***************************");
+                  
                     GeracaoCodigoObjeto gc = new GeracaoCodigoObjeto();
                     gc.gerar();
-                    List<ComandoMaquina> listaComandos = Singleton.getComandos();
-                    for(int i=0;i<listaComandos.size();i++) {
-                        System.out.println(
-                                listaComandos.get(i));
-                    }
+               
                     
                     try
                     {
@@ -160,6 +142,23 @@ public class FXMLDocumentController implements Initializable {
                         Scene scene=new Scene(FXMLLoader.load(getClass().getResource("CodigoIntermediarioFXML.fxml")));
                         stage.setScene(scene);
                         stage.setTitle("Código Intermediário");
+                        stage.initModality(Modality.WINDOW_MODAL);
+                        stage.show();
+
+
+                    }
+                    catch(Exception e)
+                    {
+                        System.out.println(e);
+                    }
+                    
+                    try
+                    {
+
+                        Stage stage = new Stage();
+                        Scene scene=new Scene(FXMLLoader.load(getClass().getResource("FXMLCodigoObjeto.fxml")));
+                        stage.setScene(scene);
+                        stage.setTitle("Código Objeto");
                         stage.initModality(Modality.WINDOW_MODAL);
                         stage.show();
 
