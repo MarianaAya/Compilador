@@ -152,6 +152,23 @@ public class FXMLDocumentController implements Initializable {
                         System.out.println(
                                 listaComandos.get(i));
                     }
+                    
+                    try
+                    {
+
+                        Stage stage = new Stage();
+                        Scene scene=new Scene(FXMLLoader.load(getClass().getResource("CodigoIntermediarioFXML.fxml")));
+                        stage.setScene(scene);
+                        stage.setTitle("Código Intermediário");
+                        stage.initModality(Modality.WINDOW_MODAL);
+                        stage.show();
+
+
+                    }
+                    catch(Exception e)
+                    {
+                        System.out.println(e);
+                    }
                 }
                     
                 

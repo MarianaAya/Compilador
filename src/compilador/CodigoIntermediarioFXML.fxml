@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="compilador.CodigoIntermediarioFXMLController">
+   <top>
+      <Label alignment="CENTER" prefHeight="45.0" prefWidth="700.0" style="-fx-background-color: #ff8080;" text="Código Intermediário" textAlignment="CENTER" textFill="WHITE" BorderPane.alignment="CENTER">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+   </top>
+   <bottom>
+      <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #ff8080;" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" onAction="#evtFechar" text="Fechar" />
+         </children>
+      </HBox>
+   </bottom>
+   <center>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <ScrollPane prefHeight="305.0" prefWidth="354.0">
+               <content>
+                  <VBox prefWidth="350.0">
+                     <children>
+                        <TableView fx:id="tvCodInter1" prefHeight="300.0" prefWidth="336.0">
+                          <columns>
+                            <TableColumn fx:id="colCod1" prefWidth="69.0" text="Código" />
+                            <TableColumn fx:id="colOperador1" minWidth="0.0" prefWidth="99.0" text="Operador" />
+                              <TableColumn fx:id="colOperando1" minWidth="0.0" prefWidth="77.0" text="Operando1" />
+                              <TableColumn fx:id="colOperando2" minWidth="0.0" prefWidth="84.0" text="Operando2" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+            <ScrollPane prefHeight="305.0" prefWidth="350.0">
+               <content>
+                  <VBox prefHeight="303.0" prefWidth="345.0">
+                     <children>
+                        <TableView fx:id="tvCodInter2" prefHeight="303.0" prefWidth="307.0">
+                          <columns>
+                            <TableColumn fx:id="colCod2" prefWidth="75.0" text="Código" />
+                            <TableColumn fx:id="colOperador2" prefWidth="92.0" text="Operador" />
+                              <TableColumn fx:id="colOperand1" prefWidth="70.0" text="Operando1" />
+                              <TableColumn fx:id="colOperand2" prefWidth="85.0" text="Operando2" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+         </children>
+      </HBox>
+   </center>
+</BorderPane>
