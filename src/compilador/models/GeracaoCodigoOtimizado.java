@@ -47,7 +47,13 @@ public class GeracaoCodigoOtimizado {
                     }
                 }
                 else {
-                    Singleton.addTriplaOtimizada(lista.get(i)); 
+                    if(lista.get(i).getOperador().equals("goto")) {
+                        if(Integer.parseInt(lista.get(i).getOperando1()) != lista.size())
+                            Singleton.addTriplaOtimizada(lista.get(i)); 
+                      
+                    }
+                    else
+                        Singleton.addTriplaOtimizada(lista.get(i)); 
                 }
             }
             else {

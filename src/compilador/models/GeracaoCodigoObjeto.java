@@ -74,9 +74,13 @@ public class GeracaoCodigoObjeto {
                 pos++; //porque para onde deve ir está no próximo comando
             }
             
+            if(lista.get(pos).getOperador().equals("halt")) {
+                Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"halt"));
+            }
+            
             pos++;
         }
-        Singleton.addComando(new ComandoMaquina("a"+(lista.get(lista.size()-1).getCodigo()+1),"halt"));
+        
     }
     
     public void Multiplicacao(int pos) {

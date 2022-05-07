@@ -12,6 +12,8 @@ public class GeracaoCodigoIntermediario {
         System.out.println("Entrei na geracao");
         tokens = Singleton.getTokensResultado();
         criarTriplas();
+        Singleton.addTripla(new Tripla(pos,"halt"));
+        pos++;
     }
     public void proxToken() {
         posToken++;
@@ -38,8 +40,8 @@ public class GeracaoCodigoIntermediario {
             if(posToken<tokens.size() && TipoVariavel(tokens.get(posToken).getToken())) {
                 token = tokens.get(posToken);
                 proxToken();
-                Singleton.addTripla(new Tripla(pos,token.getToken(),tokens.get(posToken).getCadeia()));
-                pos++;
+                //Singleton.addTripla(new Tripla(pos,token.getToken(),tokens.get(posToken).getCadeia()));
+                //pos++;
                 proxToken();
             }
             else {
@@ -248,9 +250,7 @@ public class GeracaoCodigoIntermediario {
         else { //é uma expressao
             int posAux = 0;
             boolean prioridade = false;
-            for(int t = 0; t<variaveis.size();t++) {
-                System.out.println(""+variaveis.get(t));
-            }
+        
             while(operacoes.size()>0) {
                 posAux = 0;
                 prioridade = false;

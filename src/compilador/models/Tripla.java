@@ -19,6 +19,12 @@ public class Tripla {
         this.operando1 = operando1;
         this.operando2 = "";
     }
+    public Tripla(int codigo, String operador) {
+        this.codigo = codigo;
+        this.operador = operador;
+        this.operando1 = "";
+        this.operando2 = "";
+    }
     public int getCodigo() {
         return codigo;
     }
