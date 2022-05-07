@@ -93,19 +93,19 @@ public class GeracaoCodigoObjeto {
         //primeiro termo
         if(lista.get(pos).getOperando1().charAt(0)=='(') {
             int posEndereco = getPosEndereco(lista.get(pos).getOperando1());
-            Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"load","RE","["+enderecos.get(posEndereco).getEndereco()+"]"));
+            Singleton.addComando(new ComandoMaquina("","load","RE","["+enderecos.get(posEndereco).getEndereco()+"]"));
             rotulou = true;
         }
         else {
             
             if(lista.get(pos).getOperando1().charAt(0)>=48 && lista.get(pos).getOperando1().charAt(0)<=57){//se for um número
-               Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"load","RE",lista.get(pos).getOperando1()));
+               Singleton.addComando(new ComandoMaquina("","load","RE",lista.get(pos).getOperando1()));
                rotulou = true;
             }
             else {
 
                 posRegistrador = getPosVariavel(lista.get(pos).getOperando1());
-                Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"move","RE",registradores.get(posRegistrador).getRegistrador()));
+                Singleton.addComando(new ComandoMaquina("","move","RE",registradores.get(posRegistrador).getRegistrador()));
                 rotulou = true;
             }
 

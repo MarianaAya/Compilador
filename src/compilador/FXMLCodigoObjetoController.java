@@ -36,7 +36,9 @@ public class FXMLCodigoObjetoController implements Initializable {
         for(int i=0;i<listaComandos.size();i++) {
             texto+=listaComandos.get(i)+"\n";
             
+            
         }
+        System.out.println(""+texto);
         lbResultado.setText(texto);
     }    
 
