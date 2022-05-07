@@ -37,6 +37,12 @@ public class GeracaoCodigoOtimizado {
                             if(Integer.parseInt(aux)==lista.get(i).getCodigo()) {
                                 lista.get(j).setOperando1(""+(lista.get(i).getCodigo()+1));
                             } 
+                            if(!lista.get(j).getOperando2().isEmpty()) {
+                                aux = lista.get(j).getOperando2();
+                                if(Integer.parseInt(aux)==lista.get(i).getCodigo()) {
+                                    lista.get(j).setOperando2(""+(lista.get(i).getCodigo()+1));
+                                } 
+                            }
                         } 
                     }
                 }

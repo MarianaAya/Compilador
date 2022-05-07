@@ -310,7 +310,7 @@ public class GeracaoCodigoObjeto {
 
         if(lista.get(pos).getOperador().equals("-")) {
             
-            Singleton.addComando(new ComandoMaquina("a"+lista.get(pos).getCodigo(),"load","RD",""+255));
+            Singleton.addComando(new ComandoMaquina("","load","RD",""+255));
             Singleton.addComando(new ComandoMaquina("","move","RC",reg2));
             Singleton.addComando(new ComandoMaquina("","xor","RC","RC","RD"));
             Singleton.addComando(new ComandoMaquina("","load","RD",""+1));
