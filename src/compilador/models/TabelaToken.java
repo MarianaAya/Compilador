@@ -42,7 +42,7 @@ public class TabelaToken {
         tabela.add(new Token("t_maior",">"));
         tabela.add(new Token("t_menor","<"));
         tabela.add(new Token("t_maior_igual",">="));
-        tabela.add(new Token("t_menor_iguaç","<="));
+        tabela.add(new Token("t_menor_igual","<="));
         tabela.add(new Token("t_igual","=="));
         tabela.add(new Token("t_diferente","!="));
         tabela.add(new Token("t_pontovirgula",";"));
